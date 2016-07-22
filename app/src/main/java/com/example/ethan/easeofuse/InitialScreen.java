@@ -2,10 +2,8 @@ package com.example.ethan.easeofuse;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -21,18 +19,13 @@ public class InitialScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            onGoMain();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initialscreen);
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    onGoMain();
-                }
-            }
-        };
 
         final TextView logo1 = (TextView)findViewById(R.id.logo1);
         final TextView logo2 = (TextView)findViewById(R.id.logo2);
@@ -106,7 +99,7 @@ public class InitialScreen extends AppCompatActivity {
     }
 
     public void onGoMain() {
-        Intent i = new Intent(this, MainScreen.class);
+        Intent i = new Intent(this, Main.class);
         startActivity(i);
     }
 

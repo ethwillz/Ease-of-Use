@@ -47,7 +47,7 @@ public class SignIn extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.sign_in);
 
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
@@ -82,8 +82,7 @@ public class SignIn extends AppCompatActivity implements
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -229,6 +228,18 @@ public class SignIn extends AppCompatActivity implements
             case R.id.disconnect_button:
                 revokeAccess();
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            Intent i = new Intent(this, Main.class);
+            startActivity(i);
+        }
+        else {
+            moveTaskToBack(true);
         }
     }
 }

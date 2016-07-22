@@ -14,7 +14,7 @@ public class ItemView extends RelativeLayout {
     private ImageView mImageView;
 
     public static ItemView inflate(ViewGroup parent) {
-        ItemView itemView = (ItemView) LayoutInflater.from(parent.getContext())
+        ItemView itemView = (ItemView)LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_view, parent, false);
         return itemView;
     }
