@@ -5,12 +5,13 @@
     android:layout_height="wrap_content" >
     <ImageView
         android:id="@+id/item_imageView"
-        android:background="@android:color/darker_gray"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:background="#000000"
         android:layout_margin="5dp"
-        android:contentDescription="@string/item_imageView_contentDescription"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:scaleType="fitXY"
+        android:contentDescription="Product Picture"/>
     
     <TextView
         android:id="@+id/item_titleTextView"

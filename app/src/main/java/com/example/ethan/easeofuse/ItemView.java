@@ -1,12 +1,19 @@
 package com.example.ethan.easeofuse;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class ItemView extends RelativeLayout {
     private TextView mTitleTextView;
@@ -42,7 +49,22 @@ public class ItemView extends RelativeLayout {
     public void setItem(Item item) {
         mTitleTextView.setText(item.getTitle());
         mDescriptionTextView.setText(item.getDescription());
-        // TODO: set up image URL
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference httpsReference = storage.getReferenceFromUrl(item.getImageUrl());
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        httpsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                mImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 
     public ImageView getImageView () {

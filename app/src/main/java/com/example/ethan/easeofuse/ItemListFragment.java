@@ -2,28 +2,51 @@ package com.example.ethan.easeofuse;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
 public class ItemListFragment extends ListFragment {
 
+    private DatabaseReference mDatabase;
+    Query mPostReference;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
 
-        ArrayList<Item> items = new ArrayList<Item>();
-        for (int i = 0; i < 100; i++) {
-            String url = String.format("http://www.google.com/image/%d.png", i);
-            String title = String.format("Item %d", i);
-            String description = String.format("Description of Item %d", i);
-            Item item = new Item(url, title, description);
-            items.add(item);
-        }
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        setListAdapter(new ItemAdapter(getActivity(), items));
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<Item> items = new ArrayList<>();
+                for (int i = 0; i < dataSnapshot.child("products").getChildrenCount(); i++) {
+                    String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
+                    String title = dataSnapshot.child("products").child(i + "").child("name").getValue().toString();
+                    String description = dataSnapshot.child("products").child(i + "").child("description").getValue().toString();
+                    Item item = new Item(url, title, description);
+                    items.add(item);
+                }
+                setListAdapter(new ItemAdapter(getActivity(), items));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Yo", "loadPost:onCancelled", databaseError.toException());
+            }
+        });
 
         return v;
     }
