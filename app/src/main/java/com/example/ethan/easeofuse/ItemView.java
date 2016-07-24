@@ -59,11 +59,6 @@ public class ItemView extends RelativeLayout {
             public void onSuccess(byte[] bytes) {
                 mImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
         });
     }
 
