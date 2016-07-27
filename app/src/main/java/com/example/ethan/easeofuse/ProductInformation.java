@@ -1,11 +1,11 @@
 package com.example.ethan.easeofuse;
 
-public class Item{
+public class ProductInformation {
     private String imageUrl;
     private String title;
     private String description;
 
-    public Item(String imageUrl, String title, String description){
+    public ProductInformation(String imageUrl, String title, String description){
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;

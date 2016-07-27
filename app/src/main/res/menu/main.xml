@@ -4,6 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Main">
     <item
+        android:id="@+id/add"
+        android:title="Add"
+        android:icon="@drawable/add"
+        app:showAsAction="always"
+        android:visible="false">
+    </item>
+
+    <item
         android:id="@+id/action_settings"
         android:title="Settings"
         android:icon="@drawable/settings"
