@@ -30,6 +30,7 @@ public class Main extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private int auth;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -42,6 +43,7 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
+        auth = 0;
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -65,6 +67,10 @@ public class Main extends AppCompatActivity {
                 }
                 mAdapter = new ProductAdapter(items);
                 mRecyclerView.setAdapter(mAdapter);
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(dataSnapshot.child("users").child(user.getUid()).child("Authorized").getValue().toString().equals("1")){
+                    auth = 1;
+                }
             }
 
             @Override
@@ -82,15 +88,25 @@ public class Main extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem plus = menu.findItem(R.id.action_add);
+        if(auth == 1) {
+            plus.setVisible(true);
+        }
         return true;
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i = new Intent(this, SignIn.class);
-        startActivity(i);
-        return true;
+        switch(item.getItemId()) {
+            case R.id.action_add:
+                return true;
+            case R.id.action_settings:
+                Intent i = new Intent(this, SignIn.class);
+                startActivity(i);
+                return true;
+        }
+        return false;
     }
 
     public void onBackPressed() {
