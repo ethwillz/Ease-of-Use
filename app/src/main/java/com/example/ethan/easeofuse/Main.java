@@ -6,11 +6,14 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -27,49 +30,53 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class Main extends AppCompatActivity {
+    //Sets up all of the various variables needed throughout the class
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private int auth;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
+    DatabaseReference mDatabase;
+    ArrayList<ProductInformation> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        DatabaseReference mDatabase;
+        //Sets up some more variables and intializes the views
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
         auth = 0;
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        //Increases efficiency
+        mRecyclerView.setHasFixedSize(true);
 
+        //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<ProductInformation> items = new ArrayList<>();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 for (int i = 0; i < dataSnapshot.child("products").getChildrenCount(); i++) {
                     String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
                     String title = dataSnapshot.child("products").child(i + "").child("name").getValue().toString();
                     String description = dataSnapshot.child("products").child(i + "").child("description").getValue().toString();
-                    ProductInformation item = new ProductInformation(url, title, description);
+                    String link = dataSnapshot.child("products").child(i+"").child("link").getValue().toString();
+                    String price = dataSnapshot.child("products").child(i+"").child("price").getValue().toString();
+                    String recommendation = dataSnapshot.child("products").child(i+"").child("recommendation").getValue().toString();
+                    String image = dataSnapshot.child("products").child(i+"").child("downloadUrl").getValue().toString();
+                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation);
                     items.add(item);
                 }
                 mAdapter = new ProductAdapter(items);
                 mRecyclerView.setAdapter(mAdapter);
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(dataSnapshot.child("users").child(user.getUid()).child("Authorized").getValue().toString().equals("1")){
-                    auth = 1;
+                //Checks if user is authorized to control visibility of add button
+                if(user != null) {
+                    String uid = user.getUid();
+                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
+                        auth = 1;
+                    }
                 }
             }
 
@@ -79,46 +86,38 @@ public class Main extends AppCompatActivity {
             }
         });
 
-
-        // specify an adapter (see also next example)
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    //Inflates the app bar menu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem plus = menu.findItem(R.id.action_add);
-        if(auth == 1) {
-            plus.setVisible(true);
-        }
         return true;
     }
 
 
+    //Handles selection of settings in menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.action_add:
-                return true;
-            case R.id.action_settings:
-                Intent i = new Intent(this, SignIn.class);
-                startActivity(i);
-                return true;
-        }
-        return false;
+        Intent i = new Intent(this, SignIn.class);
+        startActivity(i);
+        return true;
     }
 
+    public void onAddClick(View view){
+        Intent i = new Intent(this, AddProduct.class);
+        startActivity(i);
+    }
+
+    //Closes app if the back button is pressed from this activity
     public void onBackPressed() {
         moveTaskToBack(true);
     }
 
+    //Not sure what this does
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
@@ -133,12 +132,10 @@ public class Main extends AppCompatActivity {
         AppIndex.AppIndexApi.start(client, viewAction);
     }
 
+    //Not sure what this does
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "Main Page", // TODO: Define a title for the content shown.

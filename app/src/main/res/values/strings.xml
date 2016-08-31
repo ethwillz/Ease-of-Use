@@ -8,4 +8,5 @@
     <string name="google_title_text">Google</string>
     <string name="desc_firebase_lockup">Firebase logo and name</string>
     <string name="item_imageView_contentDescription">Item Description</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

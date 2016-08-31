@@ -24,6 +24,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignIn extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
@@ -43,6 +48,7 @@ public class SignIn extends AppCompatActivity implements
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     private GoogleApiClient mGoogleApiClient;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +95,7 @@ public class SignIn extends AppCompatActivity implements
                 }
                 // [START_EXCLUDE]
                 updateUI(user);
+                addToDatabase(user);
                 // [END_EXCLUDE]
             }
         };
@@ -205,6 +212,17 @@ public class SignIn extends AppCompatActivity implements
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+        }
+    }
+
+    private void addToDatabase(FirebaseUser user){
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        if(user != null){
+            String uid = user.getUid();
+            Map<String, String> newUser = new HashMap<>();
+            newUser.put("authorized", "0");
+            newUser.put("email", user.getEmail());
+            mDatabase.child("users").child(uid).setValue(newUser);
         }
     }
 

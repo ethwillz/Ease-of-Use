@@ -1,8 +1,9 @@
 package com.example.ethan.easeofuse;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,31 +11,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     private DatabaseReference mDatabase;
     ArrayList<ProductInformation> products;
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder{
-        private TextView mTitleTextView;
-        private TextView mDescriptionTextView;
-        private ImageView mImageView;
+        private TextView mTitle;
+        private TextView mDescription;
+        private ImageView mImage;
+        private TextView mPrice;
+        private TextView mLink;
+        private TextView mRecommendation;
+        private TextView mUrl;
 
         public ProductViewHolder(View v){
             super(v);
-            mTitleTextView = (TextView) v.findViewById(R.id.item_titleTextView);
-            mDescriptionTextView = (TextView) v.findViewById(R.id.item_descriptionTextView);
-            mImageView = (ImageView) v.findViewById(R.id.item_imageView);
+            mTitle = (TextView) v.findViewById(R.id.item_title);
+            mDescription = (TextView) v.findViewById(R.id.item_description);
+            mImage = (ImageView) v.findViewById(R.id.item_image);
+            mPrice = (TextView) v.findViewById(R.id.item_price);
+            mLink = (TextView) v.findViewById(R.id.item_link);
+            mRecommendation = (TextView) v.findViewById(R.id.item_recommendation);
+            mUrl = (TextView) v.findViewById(R.id.item_url);
         }
     }
 
@@ -45,19 +49,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public ProductAdapter.ProductViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-        // create a new view
         View v = (View)LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_view_children, parent, false);
-        // set the view's size, margins, paddings and layout parameters
+                .inflate(R.layout.product_cards, parent, false);
 
         ProductAdapter.ProductViewHolder vh = new ProductAdapter.ProductViewHolder(v);
+
         return vh;
     }
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, int position) {
-        holder.mTitleTextView.setText(products.get(position).getTitle());
-        holder.mDescriptionTextView.setText(products.get(position).getDescription());
+        holder.mTitle.setText(products.get(position).getTitle());
+        holder.mDescription.setText(products.get(position).getDescription());
+        holder.mPrice.setText(products.get(position).getPrice());
+        holder.mLink.setText(products.get(position).getLink());
+        holder.mRecommendation.setText(products.get(position).getRecommendation());
+        holder.mUrl.setText(products.get(position).getImageUrl());
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference httpsReference = storage.getReferenceFromUrl(products.get(position).getImageUrl());
@@ -66,7 +73,28 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         httpsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                holder.mImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                holder.mImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int position = holder.getAdapterPosition();
+                String title = products.get(position).getTitle();
+                String description = products.get(position).getDescription();
+                String price = products.get(position).getPrice();
+                String link = products.get(position).getLink();
+                String recommendation = products.get(position).getRecommendation();
+                String image = products.get(position).getImageUrl();
+                Intent i = new Intent(v.getContext(), SelectedProduct.class);
+                i.putExtra("title", title);
+                i.putExtra("description", description);
+                i.putExtra("price", price);
+                i.putExtra("link", link);
+                i.putExtra("recommendation", recommendation);
+                i.putExtra("image", image);
+                v.getContext().startActivity(i);
             }
         });
 

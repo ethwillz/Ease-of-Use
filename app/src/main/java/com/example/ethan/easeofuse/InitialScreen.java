@@ -15,18 +15,18 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class InitialScreen extends AppCompatActivity {
 
-    FirebaseAuth.AuthStateListener mAuthListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //If user is already registered it will bypass initial screen and go immediately to the main screen
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             onGoMain();
         }
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_initialscreen);
+        setContentView(R.layout.initial_screen);
 
+        //Sets up variables for all of the text views and the button
         final TextView logo1 = (TextView)findViewById(R.id.logo1);
         final TextView logo2 = (TextView)findViewById(R.id.logo2);
         final TextView logo3 = (TextView)findViewById(R.id.logo3);
@@ -38,6 +38,7 @@ public class InitialScreen extends AppCompatActivity {
         final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Barrio Santo.ttf");
         final Typeface button = Typeface.createFromAsset(getAssets(), "fonts/Barrio Santo.ttf");
 
+        //Sets typeface to the logo typeface
         logo1.setTypeface(main);
         logo2.setTypeface(main);
         logo3.setTypeface(main);
@@ -46,6 +47,7 @@ public class InitialScreen extends AppCompatActivity {
         logo6.setTypeface(main);
         enter.setTypeface(button);
 
+        //All of the animations for the main page
         final Animation out1 = new AlphaAnimation(1, 0);
         final Animation out2 = new AlphaAnimation(1, 0);
         final Animation out3 = new AlphaAnimation(1, 0);
@@ -74,6 +76,7 @@ public class InitialScreen extends AppCompatActivity {
         logo5.startAnimation(out5);
         logo6.startAnimation(out6);
 
+        //Starts and manages the animations
         out6.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -98,11 +101,13 @@ public class InitialScreen extends AppCompatActivity {
         });
     }
 
+    //Directs the user to the main activity
     public void onGoMain() {
         Intent i = new Intent(this, Main.class);
         startActivity(i);
     }
 
+    //Directs the user to the sign in page if they do not have an account
     public void onGoSignIn(View view) {
         Intent i = new Intent(this, SignIn.class);
         startActivity(i);
