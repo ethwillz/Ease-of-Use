@@ -1,12 +1,14 @@
 package com.example.ethan.easeofuse;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -14,8 +16,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,10 +38,10 @@ public class AddProduct extends AppCompatActivity {
     private int RESULT_LOAD_IMAGE = 652;
     private StorageReference picture;
     long numItems;
-    String downloadUrl;
+    Uri downloadUrl;
     String picturePath;
     UploadTask uploadTask;
-    private DatabaseReference mDatabase;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,7 @@ public class AddProduct extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("Yo", "loadPost:onCancelled", databaseError.toException());
+                Log.w("Error", "loadPost:onCancelled", databaseError.toException());
             }
         });
     }
@@ -98,46 +97,46 @@ public class AddProduct extends AppCompatActivity {
     public void add(View view){
         //Sets up variables for the various fields the user entered information into
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        //child is the name in the storage of the image and storage references are set up
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Saving Product");
+        dialog.show();
+        String child = numItems + ".jpg";
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
+        StorageReference productRef = storageRef.child(child);
+        Uri picture = Uri.fromFile(new File(picturePath));
+        uploadTask = productRef.putFile(picture);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                downloadUrl = taskSnapshot.getDownloadUrl();
+                pictureSuccess(downloadUrl);
+            }
+        });
+    }
+
+    public void pictureSuccess(Uri downloadUrl){
         EditText name = (EditText) findViewById(R.id.nameBox);
+        name.setTextColor(Color.parseColor("#ffffff"));
         EditText link = (EditText) findViewById(R.id.linkBox);
         EditText price = (EditText) findViewById(R.id.priceBox);
         EditText description = (EditText) findViewById(R.id.descriptionBox);
         EditText recommendation = (EditText) findViewById(R.id.recommendationBox);
 
-        //child is the name in the storage of the image and storage references are set up
-        String child = numItems + ".jpg";
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
-        StorageReference productRef = storageRef.child(child);
-        //Attempts to upload the image to storage and on success grabs the download url for storage in database
-        try {
-            InputStream picture = new FileInputStream(new File(picturePath));
-            uploadTask = productRef.putStream(picture);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    //Currently nothing happens if the upload fails
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    downloadUrl = taskSnapshot.getDownloadUrl().toString();
-                }
-            });
-        }
-        catch(FileNotFoundException e){
-            //Updates log if all of it does not work
-            Log.w("Upload failed", "loadPost:onCancelled", e);
-        }
-
+        String url = downloadUrl.toString();
         //Creates map of all information and then adds it to the database
         Map<String, String> newProduct = new HashMap<>();
         newProduct.put("name", name.getText().toString());
-        newProduct.put("downloadUrl", downloadUrl);
+        newProduct.put("downloadUrl", url);
         newProduct.put("link", link.getText().toString());
         newProduct.put("description", description.getText().toString());
         newProduct.put("price", price.getText().toString());
         newProduct.put("recommendation", recommendation.getText().toString());
         mDatabase.child("products").child(numItems + "").setValue(newProduct);
+
+        Intent i = new Intent(this, Main.class);
+        startActivity(i);
     }
 }

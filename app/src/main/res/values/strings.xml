@@ -9,4 +9,13 @@
     <string name="desc_firebase_lockup">Firebase logo and name</string>
     <string name="item_imageView_contentDescription">Item Description</string>
     <string name="title_activity_main">MainActivity</string>
+    <string-array name="types">
+        <item>All</item>
+        <item>Pants/trousers</item>
+        <item>Jeans</item>
+        <item>Tees</item>
+        <item>Shirts</item>
+        <item>Shoes</item>
+        <item>Acessories</item>
+    </string-array>
 </resources>

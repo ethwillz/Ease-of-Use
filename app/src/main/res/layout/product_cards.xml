@@ -22,7 +22,6 @@
             android:layout_height="300dp"
             android:layout_width="match_parent"
             android:scaleType="fitCenter"
-            android:contentDescription="Product Picture"
             android:layout_marginTop="10dp"/>
 
         <TextView
@@ -30,7 +29,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_image"
-            android:text="title text"
             android:textColor="#ffffff"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -42,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/item_title"
             android:layout_marginTop="5dp"
-            android:text="description text"
             android:textColor="#ffffff"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

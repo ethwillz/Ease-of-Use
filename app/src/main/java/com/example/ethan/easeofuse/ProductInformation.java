@@ -8,11 +8,6 @@ public class ProductInformation {
     private String price;
     private String recommendation;
 
-    public ProductInformation(String title, String description){
-        this.title = title;
-        this.description = description;
-    }
-
     public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation){
         this.imageUrl = imageUrl;
         this.title = title;

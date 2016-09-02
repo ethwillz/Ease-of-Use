@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +35,6 @@ public class Main extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private int auth;
     private GoogleApiClient client;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
@@ -46,7 +46,6 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.main);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
-        auth = 0;
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         //Increases efficiency
@@ -58,31 +57,31 @@ public class Main extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                for (int i = 0; i < dataSnapshot.child("products").getChildrenCount(); i++) {
+
+                //Checks if user is authorized to control visibility of add button
+                if(user != null) {
+                    String uid = user.getUid();
+                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
+                        ImageButton add = (ImageButton) findViewById(R.id.add_button);
+                        add.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                for (long i = dataSnapshot.child("products").getChildrenCount()-1; i >= 0; i--) {
                     String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
                     String title = dataSnapshot.child("products").child(i + "").child("name").getValue().toString();
                     String description = dataSnapshot.child("products").child(i + "").child("description").getValue().toString();
                     String link = dataSnapshot.child("products").child(i+"").child("link").getValue().toString();
                     String price = dataSnapshot.child("products").child(i+"").child("price").getValue().toString();
                     String recommendation = dataSnapshot.child("products").child(i+"").child("recommendation").getValue().toString();
-                    String image = dataSnapshot.child("products").child(i+"").child("downloadUrl").getValue().toString();
                     ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation);
                     items.add(item);
                 }
                 mAdapter = new ProductAdapter(items);
                 mRecyclerView.setAdapter(mAdapter);
-                //Checks if user is authorized to control visibility of add button
-                if(user != null) {
-                    String uid = user.getUid();
-                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
-                        auth = 1;
-                    }
-                }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("Yo", "loadPost:onCancelled", databaseError.toException());
             }
         });
 
@@ -95,13 +94,19 @@ public class Main extends AppCompatActivity {
         return true;
     }
 
-
     //Handles selection of settings in menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i = new Intent(this, SignIn.class);
-        startActivity(i);
-        return true;
+        if(item.getItemId() == R.id.action_settings) {
+            Intent i = new Intent(this, SignIn.class);
+            startActivity(i);
+            return true;
+        }
+        else {
+            Intent i = new Intent(this, Filter.class);
+            startActivity(i);
+            return true;
+        }
     }
 
     public void onAddClick(View view){
@@ -112,42 +117,6 @@ public class Main extends AppCompatActivity {
     //Closes app if the back button is pressed from this activity
     public void onBackPressed() {
         moveTaskToBack(true);
-    }
-
-    //Not sure what this does
-    @Override
-    public void onStart() {
-        super.onStart();
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.ethan.easeofuse/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    //Not sure what this does
-    @Override
-    public void onStop() {
-        super.onStop();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.ethan.easeofuse/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 }
 

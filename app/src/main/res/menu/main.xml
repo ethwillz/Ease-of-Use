@@ -6,9 +6,17 @@
     android:id="@+id/menu">
 
     <item
+        android:id="@+id/action_filter"
+        android:title="Filter"
+        android:icon="@drawable/filter"
+        app:showAsAction="always">
+    </item>
+
+    <item
         android:id="@+id/action_settings"
         android:title="Settings"
         android:icon="@drawable/settings"
         app:showAsAction="always">
     </item>
+
 </menu>

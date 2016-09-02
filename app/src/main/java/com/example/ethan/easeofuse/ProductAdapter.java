@@ -1,8 +1,6 @@
 package com.example.ethan.easeofuse;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -52,9 +48,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         View v = (View)LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.product_cards, parent, false);
 
-        ProductAdapter.ProductViewHolder vh = new ProductAdapter.ProductViewHolder(v);
-
-        return vh;
+        return new ProductViewHolder(v);
     }
 
     @Override
@@ -66,16 +60,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.mRecommendation.setText(products.get(position).getRecommendation());
         holder.mUrl.setText(products.get(position).getImageUrl());
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        final StorageReference httpsReference = storage.getReferenceFromUrl(products.get(position).getImageUrl());
+        Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).placeholder(R.drawable.logo).into(holder.mImage);
 
-        final long ONE_MEGABYTE = 1024 * 1024;
-        httpsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                holder.mImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-            }
-        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
