@@ -7,8 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.ethan.easeofuse.Filter"
-    android:background="#000000">
+    tools:context="com.example.ethan.easeofuse.Filter">
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,8 +16,7 @@
         android:text="Item Type"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="#ffffff"/>
+        android:layout_centerHorizontal="true" />
 
     <Spinner
         android:layout_width="200dp"
@@ -26,8 +24,7 @@
         android:id="@+id/types"
         android:layout_marginTop="15dp"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:background="#ffffff"/>
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,29 +32,37 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Style"
         android:id="@+id/textView2"
-        android:textColor="#ffffff"
         android:layout_marginTop="36dp"
         android:layout_below="@+id/types"
         android:layout_centerHorizontal="true" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Street"
-        android:id="@+id/street"
-        android:textColor="#ffffff"
-        android:layout_below="@+id/textView2"
-        android:layout_toLeftOf="@+id/textView2"
-        android:layout_toStartOf="@+id/textView2"
-        android:layout_marginTop="22dp" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Street"
+            android:id="@+id/street"
+            android:layout_alignTop="@+id/classy"
+            android:layout_alignRight="@+id/types"
+            android:layout_alignEnd="@+id/types" />
 
-    <RadioButton
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Class"
+            android:id="@+id/classy"
+            android:layout_below="@+id/textView2"
+            android:layout_toLeftOf="@+id/textView2"
+            android:layout_toStartOf="@+id/textView2"
+            android:layout_marginTop="26dp"
+            android:foreground="#ffffff"/>
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Class"
-        android:id="@+id/classy"
-        android:textColor="#ffffff"
-        android:layout_alignBottom="@+id/street"
-        android:layout_alignRight="@+id/types"
-        android:layout_alignEnd="@+id/types" />
+        android:text="Apply"
+        android:onClick="filter"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
+
 </RelativeLayout>

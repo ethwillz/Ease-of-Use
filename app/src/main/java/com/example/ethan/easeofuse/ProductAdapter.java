@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     private DatabaseReference mDatabase;
     ArrayList<ProductInformation> products;
+    ArrayList<ProductInformation> visibleProducts = new ArrayList<>();
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder{
         private TextView mTitle;
@@ -62,7 +63,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).placeholder(R.drawable.logo).into(holder.mImage);
 
-
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -88,6 +88,37 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public int getItemCount(){
         return products.size();
+    }
+
+    public void flushFilter(){
+        visibleProducts.addAll(products);
+        notifyDataSetChanged();
+    }
+
+    public void setFilter(String style, String type){
+        for(ProductInformation product: products){
+            if(style.equals("all")){
+                if (product.getType().equals(type)) {
+                    visibleProducts.add(product);
+                }
+            }
+            else if(type.equals("all")){
+                if (product.getStyle().equals(style)) {
+                    visibleProducts.add(product);
+                }
+            }
+            else if(style.equals("all") && type.equals("all")){
+                visibleProducts.add(product);
+            }
+            else {
+                if (product.getStyle().equals(style) && product.getType().equals(type)) {
+                    visibleProducts.add(product);
+                }
+            }
+        }
+        products.clear();
+        products.addAll(visibleProducts);
+        notifyDataSetChanged();
     }
 
 }

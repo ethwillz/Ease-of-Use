@@ -1,23 +1,16 @@
 package com.example.ethan.easeofuse;
 
-import android.content.ClipData;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,11 +26,13 @@ import java.util.ArrayList;
 public class Main extends AppCompatActivity {
     //Sets up all of the various variables needed throughout the class
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private GoogleApiClient client;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
+    static final int FILTER_REQUEST = 743;
+    static final int RESULT_GOOD = 879;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +69,9 @@ public class Main extends AppCompatActivity {
                     String link = dataSnapshot.child("products").child(i+"").child("link").getValue().toString();
                     String price = dataSnapshot.child("products").child(i+"").child("price").getValue().toString();
                     String recommendation = dataSnapshot.child("products").child(i+"").child("recommendation").getValue().toString();
-                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation);
+                    String type = dataSnapshot.child("products").child(i+"").child("type").getValue().toString();
+                    String style = dataSnapshot.child("products").child(i+"").child("style").getValue().toString();
+                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style);
                     items.add(item);
                 }
                 mAdapter = new ProductAdapter(items);
@@ -84,7 +81,6 @@ public class Main extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -102,10 +98,23 @@ public class Main extends AppCompatActivity {
             startActivity(i);
             return true;
         }
-        else {
+        else if(item.getItemId() == R.id.action_filter){
             Intent i = new Intent(this, Filter.class);
-            startActivity(i);
+            startActivityForResult(i, FILTER_REQUEST);
             return true;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == FILTER_REQUEST){
+            if(resultCode == RESULT_GOOD) {
+                String style = data.getStringExtra("style");
+                String type = data.getStringExtra("type");
+                mAdapter.setFilter(style, type);
+            }
         }
     }
 
@@ -119,4 +128,3 @@ public class Main extends AppCompatActivity {
         moveTaskToBack(true);
     }
 }
-
