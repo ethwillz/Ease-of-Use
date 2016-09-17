@@ -76,7 +76,7 @@ public class InitialScreen extends AppCompatActivity {
         logo5.startAnimation(out5);
         logo6.startAnimation(out6);
 
-        //Starts and manages the animations
+        //Starts and manages the animation of the logo
         out6.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

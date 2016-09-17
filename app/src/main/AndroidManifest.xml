@@ -46,7 +46,6 @@
             android:name=".SelectedProduct"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".Filter"></activity>
     </application>
 
 </manifest>

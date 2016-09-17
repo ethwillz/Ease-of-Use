@@ -12,12 +12,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
-    private DatabaseReference mDatabase;
-    ArrayList<ProductInformation> products;
-    ArrayList<ProductInformation> visibleProducts = new ArrayList<>();
+    List<ProductInformation> products;
+    FilterProducts filter;
 
+    //Constructor for adapter which sets the list of products and initializes the filter
+    public ProductAdapter(ArrayList<ProductInformation> items){
+        products = items;
+        filter = new FilterProducts(products, this);
+    }
+
+    //Viewholder which establishes the UI components of the card view that are going to be populated
     public static class ProductViewHolder extends RecyclerView.ViewHolder{
         private TextView mTitle;
         private TextView mDescription;
@@ -39,10 +46,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
     }
 
-    public ProductAdapter(ArrayList<ProductInformation> items){
-        products = items;
-    }
-
     @Override
     public ProductAdapter.ProductViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
@@ -52,6 +55,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return new ProductViewHolder(v);
     }
 
+    //Binds all information to UI element and sets up click listener
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, int position) {
         holder.mTitle.setText(products.get(position).getTitle());
@@ -63,6 +67,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).placeholder(R.drawable.logo).into(holder.mImage);
 
+        //On click gets the position of the view and goes into the detailed view
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -86,39 +91,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     }
 
+    //Returns count of products in list
     public int getItemCount(){
         return products.size();
     }
 
-    public void flushFilter(){
-        visibleProducts.addAll(products);
-        notifyDataSetChanged();
+    //Sets visible list to a new list
+    public void setList(List<ProductInformation> list){
+        this.products = list;
     }
 
-    public void setFilter(String style, String type){
-        for(ProductInformation product: products){
-            if(style.equals("all")){
-                if (product.getType().equals(type)) {
-                    visibleProducts.add(product);
-                }
-            }
-            else if(type.equals("all")){
-                if (product.getStyle().equals(style)) {
-                    visibleProducts.add(product);
-                }
-            }
-            else if(style.equals("all") && type.equals("all")){
-                visibleProducts.add(product);
-            }
-            else {
-                if (product.getStyle().equals(style) && product.getType().equals(type)) {
-                    visibleProducts.add(product);
-                }
-            }
-        }
-        products.clear();
-        products.addAll(visibleProducts);
-        notifyDataSetChanged();
+    //Filters products based on a query
+    public void filterProducts(String query){
+        filter.filter(query);
     }
-
 }
+
+

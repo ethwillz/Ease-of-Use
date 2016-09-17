@@ -1,18 +1,17 @@
 package com.example.ethan.easeofuse;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,11 +27,13 @@ public class Main extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private GoogleApiClient client;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
     static final int FILTER_REQUEST = 743;
     static final int RESULT_GOOD = 879;
+    private String savedStyle = "All";
+    private String savedType = "All";
+    SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,6 @@ public class Main extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        //Increases efficiency
         mRecyclerView.setHasFixedSize(true);
 
         //Populates the recyclerview with the name, description, and photo for all products in the database
@@ -62,6 +62,7 @@ public class Main extends AppCompatActivity {
                     }
                 }
 
+                //Adds relevant information about each product to a List
                 for (long i = dataSnapshot.child("products").getChildrenCount()-1; i >= 0; i--) {
                     String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
                     String title = dataSnapshot.child("products").child(i + "").child("name").getValue().toString();
@@ -74,6 +75,7 @@ public class Main extends AppCompatActivity {
                     ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style);
                     items.add(item);
                 }
+                //Sets adapter to the list of products
                 mAdapter = new ProductAdapter(items);
                 mRecyclerView.setAdapter(mAdapter);
             }
@@ -81,16 +83,19 @@ public class Main extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    //Inflates the app bar menu
+    //Inflates the app bar menu and establishes that the searchview exists
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
         return true;
     }
 
-    //Handles selection of settings in menu
+    //Handles selection of settings, filter, and search
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_settings) {
@@ -98,9 +103,21 @@ public class Main extends AppCompatActivity {
             startActivity(i);
             return true;
         }
-        else if(item.getItemId() == R.id.action_filter){
-            Intent i = new Intent(this, Filter.class);
-            startActivityForResult(i, FILTER_REQUEST);
+        //Upon chosing search the searchview has the listener set up which filters the list based on the input
+        else if(item.getItemId() == R.id.action_search){
+            mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    mAdapter.filterProducts(query);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    mAdapter.filterProducts(newText);
+                    return true;
+                }
+            });
             return true;
         }
         else {
@@ -108,16 +125,18 @@ public class Main extends AppCompatActivity {
         }
     }
 
+    //Gets results from the filter and pares down the list based on user inputs
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == FILTER_REQUEST){
             if(resultCode == RESULT_GOOD) {
-                String style = data.getStringExtra("style");
-                String type = data.getStringExtra("type");
-                mAdapter.setFilter(style, type);
+                savedStyle = data.getStringExtra("style");
+                savedType = data.getStringExtra("type");
+                //mAdapter.filterProducts(savedStyle, savedType);
             }
         }
     }
 
+    //Upon click of the add button the new activity to add a product opens
     public void onAddClick(View view){
         Intent i = new Intent(this, AddProduct.class);
         startActivity(i);

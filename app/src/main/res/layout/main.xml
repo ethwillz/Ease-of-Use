@@ -10,12 +10,14 @@
     tools:context=".Main"
     android:background="#000000">
 
+    <!--Recyclerview which displays the products which are in card views-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cardList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
 
+    <!--Add product button which is only visible to authorized users-->
     <ImageButton
         android:id="@+id/add_button"
         android:layout_width="100dp"

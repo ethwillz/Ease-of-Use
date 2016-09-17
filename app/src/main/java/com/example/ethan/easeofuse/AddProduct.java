@@ -11,8 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,12 +40,12 @@ public class AddProduct extends AppCompatActivity {
 
     //All required variables for classes below
     private int RESULT_LOAD_IMAGE = 652;
-    private StorageReference picture;
     long numItems;
     Uri downloadUrl;
     String picturePath;
     UploadTask uploadTask;
     DatabaseReference mDatabase;
+    String style;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,12 @@ public class AddProduct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_product);
 
-        //Adds listener for the database to get the number of products stored whcih helps in naming scheme of new product
+        Spinner spinner = (Spinner) findViewById(R.id.types);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        //Adds listener for the database to get the number of products stored which helps in naming scheme of new product
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -59,7 +68,6 @@ public class AddProduct extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("Error", "loadPost:onCancelled", databaseError.toException());
             }
         });
     }
@@ -87,10 +95,8 @@ public class AddProduct extends AppCompatActivity {
             picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            //Textview notifies the user that an image has been successfully chosen
-            TextView success = (TextView) findViewById(R.id.successText);
-            success.setVisibility(View.VISIBLE);
-
+            //Toast lets user know the photo has been succesfully found
+            Toast.makeText(this, "Picture added successfully", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -98,15 +104,19 @@ public class AddProduct extends AppCompatActivity {
         //Sets up variables for the various fields the user entered information into
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        //child is the name in the storage of the image and storage references are set up
+        //Progress spinner to let user know application is working
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Saving Product");
         dialog.show();
+
+        //child is the name in the storage of the image and storage references are set up
         String child = numItems + ".jpg";
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
         StorageReference productRef = storageRef.child(child);
         Uri picture = Uri.fromFile(new File(picturePath));
+
+        //Picture is uploaded from phone using path
         uploadTask = productRef.putFile(picture);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -118,24 +128,36 @@ public class AddProduct extends AppCompatActivity {
     }
 
     public void pictureSuccess(Uri downloadUrl){
+        //Finds UI elements which the user entered information into
         EditText name = (EditText) findViewById(R.id.nameBox);
-        name.setTextColor(Color.parseColor("#ffffff"));
         EditText link = (EditText) findViewById(R.id.linkBox);
         EditText price = (EditText) findViewById(R.id.priceBox);
         EditText description = (EditText) findViewById(R.id.descriptionBox);
         EditText recommendation = (EditText) findViewById(R.id.recommendationBox);
 
-        String url = downloadUrl.toString();
+        RadioButton street = (RadioButton) findViewById(R.id.street);
+        RadioButton dress = (RadioButton) findViewById(R.id.classy);
+        if (street.isChecked())
+            style = "street";
+        else
+            style = "class";
+
+        Spinner spinner = (Spinner) findViewById(R.id.types);
+        String type = spinner.getSelectedItem().toString();
+
         //Creates map of all information and then adds it to the database
         Map<String, String> newProduct = new HashMap<>();
         newProduct.put("name", name.getText().toString());
-        newProduct.put("downloadUrl", url);
+        newProduct.put("downloadUrl", downloadUrl.toString());
         newProduct.put("link", link.getText().toString());
         newProduct.put("description", description.getText().toString());
         newProduct.put("price", price.getText().toString());
         newProduct.put("recommendation", recommendation.getText().toString());
+        newProduct.put("style", style);
+        newProduct.put("type", type);
         mDatabase.child("products").child(numItems + "").setValue(newProduct);
 
+        //Returns to main activity after new product entered into database
         Intent i = new Intent(this, Main.class);
         startActivity(i);
     }
