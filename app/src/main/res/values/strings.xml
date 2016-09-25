@@ -9,6 +9,7 @@
     <string name="desc_firebase_lockup">Firebase logo and name</string>
     <string name="item_imageView_contentDescription">Item Description</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="banner_ad_unit_id">ca-app-pub-5566797500264030/6920428701</string>
     <string-array name="types">
         <item>All</item>
         <item>Pants/trousers</item>

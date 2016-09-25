@@ -1,4 +1,4 @@
-package com.example.ethan.easeofuse;
+package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +44,11 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5566797500264030~3966962306");
+        final AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1BF89AB15C45335B1CA8BCE94927DA8C").build();
+        mAdView.loadAd(adRequest);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -59,6 +67,7 @@ public class Main extends AppCompatActivity {
                     if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
                         ImageButton add = (ImageButton) findViewById(R.id.add_button);
                         add.setVisibility(View.VISIBLE);
+                        mAdView.setVisibility(View.INVISIBLE);
                     }
                 }
 

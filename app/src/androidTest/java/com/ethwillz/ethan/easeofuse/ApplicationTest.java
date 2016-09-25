@@ -1,4 +1,4 @@
-package com.example.ethan.easeofuse;
+package com.ethwillz.ethan.easeofuse;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package com.example.ethan.easeofuse;
+package com.ethwillz.ethan.easeofuse;
 
 public class ProductInformation {
     private String imageUrl;

@@ -1,6 +1,7 @@
-package com.example.ethan.easeofuse;
+package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 public class SelectedProduct extends AppCompatActivity {
@@ -19,6 +19,10 @@ public class SelectedProduct extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.selected_product);
+
+        Button buy = (Button) findViewById(R.id.buy);
+        final Typeface button = Typeface.createFromAsset(getAssets(), "fonts/Barrio Santo.ttf");
+        buy.setTypeface(button);
 
         Intent i = getIntent();
         link = i.getExtras().getString("link");
@@ -36,7 +40,6 @@ public class SelectedProduct extends AppCompatActivity {
         price.setText(i.getExtras().getString("price"));
         recommendation.setText(i.getExtras().getString("recommendation"));
 
-        Button buy = (Button) findViewById(R.id.buy);
         buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

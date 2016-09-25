@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:227532834232:android:f9345a62fc397aca",
+        "mobilesdk_app_id": "1:227532834232:android:f8aacdb531fc48aa",
         "android_client_info": {
-          "package_name": "com.example.ethan.easeofuse"
+          "package_name": "com.ethwillz.ethan.easeofuse"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "227532834232-ioi2dqe7ejv2fculfqaqstmmk4ub1870.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ethwillz.ethan.easeofuse",
+            "certificate_hash": "538B2CD3A21588051897CE17E9187A17DF83572C"
+          }
+        },
         {
           "client_id": "227532834232-rhjv8uplhe4tv5r3v29i3gfu81ufngk1.apps.googleusercontent.com",
           "client_type": 3
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227532834232-rhjv8uplhe4tv5r3v29i3gfu81ufngk1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

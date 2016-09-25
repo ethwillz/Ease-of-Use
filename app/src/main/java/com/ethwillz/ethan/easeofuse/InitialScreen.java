@@ -1,4 +1,4 @@
-package com.example.ethan.easeofuse;
+package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
 import android.graphics.Typeface;
