@@ -9,8 +9,10 @@ public class ProductInformation {
     private String recommendation;
     private String type;
     private String style;
+    private String user;
+    private String productID;
 
-    public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation, String type, String style){
+    public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation, String type, String style, String user, String productID){
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
@@ -19,6 +21,8 @@ public class ProductInformation {
         this.recommendation = recommendation;
         this.type = type;
         this.style = style;
+        this.user = user;
+        this.productID = productID;
     }
 
     public String getImageUrl(){ return imageUrl; }
@@ -44,4 +48,10 @@ public class ProductInformation {
 
     public String getType(){ return type; }
     public void setType(String type) { this.type = type; }
+
+    public String getUser(){ return user; }
+    public void setUser(String user) { this.user = user; }
+
+    public String getProductID(){ return productID; }
+    public void setProductID(String productID) { this.productID = productID; }
 }

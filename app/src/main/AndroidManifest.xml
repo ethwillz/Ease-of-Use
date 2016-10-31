@@ -22,11 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Main"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".SignIn"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
@@ -46,7 +41,10 @@
             android:name=".SelectedProduct"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
-
+        <activity
+            android:name=".MainView"
+            android:label="@string/title_activity_main_view"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

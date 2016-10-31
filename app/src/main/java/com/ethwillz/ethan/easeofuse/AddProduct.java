@@ -3,18 +3,22 @@ package com.ethwillz.ethan.easeofuse;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +48,12 @@ public class AddProduct extends AppCompatActivity {
         //Creates activity and sets view
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_product);
+
+        final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Barrio Santo.ttf");
+        Button enter = (Button) findViewById(R.id.enter);
+        enter.setTypeface(main);
+        Button upload = (Button) findViewById(R.id.upload);
+        upload.setTypeface(main);
 
         Spinner spinner = (Spinner) findViewById(R.id.types);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
@@ -139,6 +149,7 @@ public class AddProduct extends AppCompatActivity {
 
         //Creates map of all information and then adds it to the database
         Map<String, String> newProduct = new HashMap<>();
+        newProduct.put("user", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         newProduct.put("name", name.getText().toString());
         newProduct.put("downloadUrl", downloadUrl.toString());
         newProduct.put("link", link.getText().toString());
@@ -150,7 +161,7 @@ public class AddProduct extends AppCompatActivity {
         mDatabase.child("products").child(numItems + "").setValue(newProduct);
 
         //Returns to main activity after new product entered into database
-        Intent i = new Intent(this, Main.class);
+        Intent i = new Intent(this, MainView.class);
         startActivity(i);
     }
 }

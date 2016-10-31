@@ -6,11 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,33 +26,22 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Main extends Fragment {
+public class Search extends Fragment {
     //Sets up all of the various variables needed throughout the class
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
-    static final int FILTER_REQUEST = 743;
-    static final int RESULT_GOOD = 879;
-    private String savedStyle = "All";
-    private String savedType = "All";
-    SearchView mSearchView;
     View v;
+    EditText search;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.main, container, false);
-        ImageButton add = (ImageButton) view.findViewById(R.id.add_button);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), AddProduct.class);
-                startActivity(i);
-            }
-        });
+        View view = inflater.inflate(R.layout.search, container, false);
+        search = (EditText) view.findViewById(R.id.searchbar);
 
         return view;
     }
@@ -73,15 +65,6 @@ public class Main extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                //Checks if user is authorized to control visibility of add button and banner ad
-                if(user != null) {
-                    String uid = user.getUid();
-                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
-                        ImageButton add = (ImageButton) v.findViewById(R.id.add_button);
-                        add.setVisibility(View.VISIBLE);
-                    }
-                }
-
                 //Adds relevant information about each product to a List
                 for (long i = dataSnapshot.child("products").getChildrenCount()-1; i >= 0; i--) {
                     String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
@@ -103,6 +86,25 @@ public class Main extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        search.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String text = search.getText().toString();
+                mAdapter.filterProducts(text);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }

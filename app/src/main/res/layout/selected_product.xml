@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -23,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title"
-            android:textSize="20dp"
+            android:textSize="30dp"
             android:textColor="#ffffff"
             android:paddingBottom="15dp"/>
 
@@ -32,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/price"
-            android:textSize="20dp"
+            android:textSize="25dp"
             android:textColor="#ffffff"
             android:paddingBottom="15dp"/>
 
@@ -63,16 +64,36 @@
             android:textColor="#ffffff"
             android:paddingBottom="10dp"/>
 
-        <!--Button which opens up webview to buy the product-->
-        <Button
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Buy"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/buy"
-            android:background="@drawable/enter_button"
-            android:textColor="#000000"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <!--Button which opens up webview to buy the product-->
+            <Button
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:textSize="40dp"
+                android:text="Buy"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/buy"
+                android:background="@drawable/enter_button"
+                android:textColor="#000000"
+                android:layout_marginRight="15dp"/>
+
+            <!--Button which saves product to personal list-->
+            <Button
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:textSize="40dp"
+                android:text="Save"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/save"
+                android:background="@drawable/enter_button"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

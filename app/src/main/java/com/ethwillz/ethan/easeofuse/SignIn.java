@@ -201,6 +201,9 @@ public class SignIn extends AppCompatActivity implements
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if(!dataSnapshot.child("users").hasChild(user.getUid())) {
                         addToDatabase(user);
+                        //This has a chance of not working *******************************************************************************************************************************LOOK AT THIS IS CRASHING
+                        Intent i = new Intent(mDetailTextView.getContext(), Main.class);
+                        startActivity(i);
                     }
                 }
                 @Override
@@ -223,6 +226,7 @@ public class SignIn extends AppCompatActivity implements
             Map<String, String> newUser = new HashMap<>();
             newUser.put("authorized", "0");
             newUser.put("email", user.getEmail());
+            newUser.put("profilePic", user.getPhotoUrl().toString());
             mDatabase.child("users").child(uid).setValue(newUser);
         }
     }
@@ -253,7 +257,7 @@ public class SignIn extends AppCompatActivity implements
     public void onBackPressed() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            Intent i = new Intent(this, Main.class);
+            Intent i = new Intent(this, MainView.class);
             startActivity(i);
         }
         else {

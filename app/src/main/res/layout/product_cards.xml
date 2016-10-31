@@ -45,10 +45,23 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/item_title"
             android:layout_marginTop="5dp"
-            android:textColor="#ffffff"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:textColor="#ffffff" />
+
+        <!--User who uploaded product-->
+        <TextView
+            android:id="@+id/item_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_description"
+            android:layout_marginTop="10dp"
+            android:textColor="#FFFFFF"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="25dp"
+            android:layout_centerHorizontal="true"/>
 
         <!--Invisible price of product for use when clicked-->
         <TextView
@@ -74,6 +87,20 @@
         <!--Invisible url of product for use when clicked-->
         <TextView
             android:id="@+id/item_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <!--Invisible url of product for use when clicked-->
+        <TextView
+            android:id="@+id/item_image_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <!--Invisible url of product for use when clicked-->
+        <TextView
+            android:id="@+id/item_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible" />

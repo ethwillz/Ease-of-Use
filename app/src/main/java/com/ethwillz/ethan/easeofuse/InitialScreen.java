@@ -103,7 +103,7 @@ public class InitialScreen extends AppCompatActivity {
 
     //Directs the user to the main activity
     public void onGoMain() {
-        Intent i = new Intent(this, Main.class);
+        Intent i = new Intent(this, MainView.class);
         startActivity(i);
     }
 

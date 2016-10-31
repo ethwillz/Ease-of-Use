@@ -1,6 +1,7 @@
 package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     //Viewholder which establishes the UI components of the card view that are going to be populated
-    public static class ProductViewHolder extends RecyclerView.ViewHolder{
+    public static class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mTitle;
         private TextView mDescription;
         private ImageView mImage;
@@ -32,16 +33,48 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private TextView mLink;
         private TextView mRecommendation;
         private TextView mUrl;
+        private TextView mUser;
+        private TextView mImageUrl;
+        private TextView mProductID;
 
         public ProductViewHolder(View v){
             super(v);
+
+            final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Barrio Santo.ttf");
             mTitle = (TextView) v.findViewById(R.id.item_title);
             mDescription = (TextView) v.findViewById(R.id.item_description);
             mImage = (ImageView) v.findViewById(R.id.item_image);
+            mImageUrl = (TextView) v.findViewById(R.id.item_image_url);
             mPrice = (TextView) v.findViewById(R.id.item_price);
             mLink = (TextView) v.findViewById(R.id.item_link);
             mRecommendation = (TextView) v.findViewById(R.id.item_recommendation);
             mUrl = (TextView) v.findViewById(R.id.item_url);
+            mUser = (TextView) v.findViewById(R.id.item_user);
+            mProductID = (TextView) v.findViewById(R.id.item_id);
+            mUser.setTypeface(main);
+
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view){
+            int position = getLayoutPosition();
+            String title = mTitle.getText().toString();
+            String description = mDescription.getText().toString();
+            String price = mPrice.getText().toString();
+            String link = mLink.getText().toString();
+            String recommendation = mRecommendation.getText().toString();
+            String image = mImageUrl.getText().toString();
+            String id = mProductID.getText().toString();
+            Intent i = new Intent(view.getContext(), SelectedProduct.class);
+            i.putExtra("title", title);
+            i.putExtra("description", description);
+            i.putExtra("price", price);
+            i.putExtra("link", link);
+            i.putExtra("recommendation", recommendation);
+            i.putExtra("image", image);
+            i.putExtra("id", id);
+            view.getContext().startActivity(i);
         }
     }
 
@@ -63,31 +96,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.mLink.setText(products.get(position).getLink());
         holder.mRecommendation.setText(products.get(position).getRecommendation());
         holder.mUrl.setText(products.get(position).getImageUrl());
+        holder.mUser.setText(products.get(position).getUser());
+        holder.mImageUrl.setText(products.get(position).getImageUrl());
+        holder.mProductID.setText(products.get(position).getProductID());
 
         Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).placeholder(R.drawable.logo).into(holder.mImage);
-
-        //On click gets the position of the view and goes into the detailed view
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                int position = holder.getAdapterPosition();
-                String title = products.get(position).getTitle();
-                String description = products.get(position).getDescription();
-                String price = products.get(position).getPrice();
-                String link = products.get(position).getLink();
-                String recommendation = products.get(position).getRecommendation();
-                String image = products.get(position).getImageUrl();
-                Intent i = new Intent(v.getContext(), SelectedProduct.class);
-                i.putExtra("title", title);
-                i.putExtra("description", description);
-                i.putExtra("price", price);
-                i.putExtra("link", link);
-                i.putExtra("recommendation", recommendation);
-                i.putExtra("image", image);
-                v.getContext().startActivity(i);
-            }
-        });
-
     }
 
     //Returns count of products in list
