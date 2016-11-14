@@ -40,7 +40,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         public ProductViewHolder(View v){
             super(v);
 
-            final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Barrio Santo.ttf");
+            final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
+            final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
+
             mTitle = (TextView) v.findViewById(R.id.item_title);
             mDescription = (TextView) v.findViewById(R.id.item_description);
             mImage = (ImageView) v.findViewById(R.id.item_image);
@@ -51,7 +53,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             mUrl = (TextView) v.findViewById(R.id.item_url);
             mUser = (TextView) v.findViewById(R.id.item_user);
             mProductID = (TextView) v.findViewById(R.id.item_id);
+
             mUser.setTypeface(main);
+            mTitle.setTypeface(two);
+            mDescription.setTypeface(two);
 
             v.setOnClickListener(this);
         }

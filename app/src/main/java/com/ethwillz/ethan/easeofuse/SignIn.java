@@ -1,11 +1,14 @@
 package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +56,7 @@ public class SignIn extends AppCompatActivity implements
     private TextView mDetailTextView;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference mDatabase;
+    Typeface main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,12 @@ public class SignIn extends AppCompatActivity implements
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
+        TextView directions = (TextView) findViewById(R.id.directions);
+
+        main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
+        mStatusTextView.setTypeface(main);
+        mDetailTextView.setTypeface(main);
+        directions.setTypeface(main);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -193,6 +203,11 @@ public class SignIn extends AppCompatActivity implements
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            findViewById(R.id.directions).setVisibility(View.VISIBLE);
+            Button out = (Button) findViewById(R.id.sign_out_button);
+            Button disconnect = (Button) findViewById(R.id.disconnect_button);
+            out.setTypeface(main);
+            disconnect.setTypeface(main);
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             mDatabase.addValueEventListener(new ValueEventListener() {
@@ -201,9 +216,6 @@ public class SignIn extends AppCompatActivity implements
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if(!dataSnapshot.child("users").hasChild(user.getUid())) {
                         addToDatabase(user);
-                        //This has a chance of not working *******************************************************************************************************************************LOOK AT THIS IS CRASHING
-                        Intent i = new Intent(mDetailTextView.getContext(), Main.class);
-                        startActivity(i);
                     }
                 }
                 @Override

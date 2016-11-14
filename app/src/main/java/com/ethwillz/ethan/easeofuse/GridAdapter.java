@@ -1,53 +1,126 @@
 package com.ethwillz.ethan.easeofuse;
 
-import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridAdapter extends BaseAdapter {
-    List<ProductInformation> items;
-    private Context mContext;
+public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ProductViewHolder>{
+    List<ProductInformation> products;
+    FilterProducts filter;
 
-    public GridAdapter(Context context, ArrayList<ProductInformation> items){
-        mContext = context;
-        this.items = items;
+    //Constructor for adapter which sets the list of products and initializes the filter
+    public GridAdapter(ArrayList<ProductInformation> items){
+        products = items;
     }
 
-    public int getCount(){
-        return items.size();
-    }
+    //Viewholder which establishes the UI components of the card view that are going to be populated
+    public static class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private TextView mTitle;
+        private TextView mDescription;
+        private ImageView mImage;
+        private TextView mPrice;
+        private TextView mLink;
+        private TextView mRecommendation;
+        private TextView mUrl;
+        private TextView mUser;
+        private TextView mImageUrl;
+        private TextView mProductID;
 
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
+        public ProductViewHolder(View v){
+            super(v);
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+            final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
+            final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+            mTitle = (TextView) v.findViewById(R.id.item_title);
+            mDescription = (TextView) v.findViewById(R.id.item_description);
+            mImage = (ImageView) v.findViewById(R.id.item_image);
+            mImageUrl = (TextView) v.findViewById(R.id.item_image_url);
+            mPrice = (TextView) v.findViewById(R.id.item_price);
+            mLink = (TextView) v.findViewById(R.id.item_link);
+            mRecommendation = (TextView) v.findViewById(R.id.item_recommendation);
+            mUrl = (TextView) v.findViewById(R.id.item_url);
+            mUser = (TextView) v.findViewById(R.id.item_user);
+            mProductID = (TextView) v.findViewById(R.id.item_id);
 
-        ImageView pic;
+            mUser.setTypeface(main);
+            mTitle.setTypeface(two);
+            mDescription.setTypeface(two);
 
-        if(view == null){
-            pic = new ImageView(mContext);
-            pic.setLayoutParams(new GridView.LayoutParams(250, 250));
+            v.setOnClickListener(this);
         }
-        else
-            pic = (ImageView) view;
 
-        Picasso.with(mContext).load(items.get(i).getImageUrl()).placeholder(R.drawable.logo).into(pic);
-        return pic;
+        @Override
+        public void onClick(View view){
+            int position = getLayoutPosition();
+            String title = mTitle.getText().toString();
+            String description = mDescription.getText().toString();
+            String price = mPrice.getText().toString();
+            String link = mLink.getText().toString();
+            String recommendation = mRecommendation.getText().toString();
+            String image = mImageUrl.getText().toString();
+            String id = mProductID.getText().toString();
+            Intent i = new Intent(view.getContext(), SelectedProduct.class);
+            i.putExtra("title", title);
+            i.putExtra("description", description);
+            i.putExtra("price", price);
+            i.putExtra("link", link);
+            i.putExtra("recommendation", recommendation);
+            i.putExtra("image", image);
+            i.putExtra("id", id);
+            view.getContext().startActivity(i);
+        }
+    }
+
+    @Override
+    public GridAdapter.ProductViewHolder onCreateViewHolder(ViewGroup parent,
+                                                               int viewType) {
+        View v = (View)LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.saved_cards, parent, false);
+
+        return new ProductViewHolder(v);
+    }
+
+    //Binds all information to UI element and sets up click listener
+    @Override
+    public void onBindViewHolder(final ProductViewHolder holder, int position) {
+        holder.mTitle.setText(products.get(position).getTitle());
+        holder.mDescription.setText(products.get(position).getDescription());
+        holder.mPrice.setText(products.get(position).getPrice());
+        holder.mLink.setText(products.get(position).getLink());
+        holder.mRecommendation.setText(products.get(position).getRecommendation());
+        holder.mUrl.setText(products.get(position).getImageUrl());
+        holder.mUser.setText(products.get(position).getUser());
+        holder.mImageUrl.setText(products.get(position).getImageUrl());
+        holder.mProductID.setText(products.get(position).getProductID());
+
+        Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).placeholder(R.drawable.logo).into(holder.mImage);
+    }
+
+    //Returns count of products in list
+    public int getItemCount(){
+        return products.size();
+    }
+
+    //Sets visible list to a new list
+    public void setList(List<ProductInformation> list){
+        this.products = list;
+    }
+
+    //Filters products based on a query
+    public void filterProducts(String query){
+        filter.filter(query);
     }
 }
+
+

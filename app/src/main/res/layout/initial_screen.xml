@@ -9,14 +9,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".InitialScreen"
     android:orientation="vertical"
-    android:background="@drawable/mainback">
+    android:background="@drawable/newback">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ease of Use"
         android:id="@+id/logo1"
-        android:textSize="77dp"
+        android:textSize="58dp"
         android:textColor="#FFFFFF"/>
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="Ease of Use"
         android:id="@+id/logo2"
-        android:textSize="77dp"
+        android:textSize="58dp"
         android:textColor="#FFFFFF"/>
 
     <TextView
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:text="Ease of Use"
         android:id="@+id/logo3"
-        android:textSize="77dp"
+        android:textSize="58dp"
         android:textColor="#FFFFFF"/>
 
     <TextView
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Ease of Use"
         android:id="@+id/logo4"
-        android:textSize="77dp"
+        android:textSize="58dp"
         android:textColor="#FFFFFF"/>
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:text="Ease of Use"
         android:id="@+id/logo5"
-        android:textSize="77dp"
+        android:textSize="58dp"
         android:textColor="#FFFFFF"/>
 
     <TextView
@@ -56,23 +56,24 @@
         android:layout_height="wrap_content"
         android:text="Ease of Use"
         android:id="@+id/logo6"
-        android:textSize="77dp"
+        android:textSize="58dp"
         android:textColor="#FFFFFF"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter"
-        android:id="@+id/enter"
-        android:textSize="50dp"
-        android:gravity="center"
-        android:background="@drawable/enter_button"
-        android:textColor="#000000"
-        android:layout_gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:onClick="onGoSignIn"/>
+        android:text="Ease of Use"
+        android:id="@+id/logo7"
+        android:textSize="58dp"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ease of Use"
+        android:id="@+id/logo8"
+        android:textSize="58dp"
+        android:textColor="#FFFFFF"/>
+
 
 </LinearLayout>

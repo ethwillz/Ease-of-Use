@@ -8,9 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,18 +42,18 @@ public class Profile extends Fragment {
     TextView displayName;
     TextView uid;
     TextView savedTitle;
-    GridView savedGrid;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
     FirebaseUser user;
     ArrayList<String> savedItems = new ArrayList<>();
+    RecyclerView savedGrid;
+    private GridAdapter mAdapter;
+    GridLayoutManager layout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);
-
-        savedGrid = (GridView) view.findViewById(R.id.savedGrid);
 
         // Inflate the layout for this fragment
         return view;
@@ -62,7 +65,10 @@ public class Profile extends Fragment {
 
         v = getView();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        savedGrid.invalidateViews();
+        layout = new GridLayoutManager(v.getContext(), 2);
+        savedGrid = (RecyclerView) v.findViewById(R.id.savedGrid);
+        savedGrid.setLayoutManager(layout);
+        savedGrid.setHasFixedSize(true);
 
         //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -93,28 +99,37 @@ public class Profile extends Fragment {
                     items.add(item);
                 }
 
-                savedGrid.setAdapter(new GridAdapter(v.getContext(), items));
+                mAdapter = new GridAdapter(items);
+                savedGrid.setAdapter(mAdapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
 
-        final Typeface eou = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Barrio Santo.ttf");
-        pic = (ImageView) v.findViewById(R.id.profilepic);
+        final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
+        final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
         displayName = (TextView) v.findViewById(R.id.displayName);
         uid = (TextView) v.findViewById(R.id.uid);
         savedTitle = (TextView) v.findViewById(R.id.savedTitle);
 
-        displayName.setTypeface(eou);
-        uid.setTypeface(eou);
-        savedTitle.setTypeface(eou);
+        displayName.setTypeface(two);
+        uid.setTypeface(main);
+        savedTitle.setTypeface(main);
 
         if(user != null){
-            Picasso.with(v.getContext()).load(user.getPhotoUrl()).placeholder(R.drawable.logo).into(pic);
             displayName.setText(user.getDisplayName());
             uid.setText(user.getUid());
         }
+
+        displayName.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent i = new Intent(v.getContext(), SignIn.class);
+                startActivity(i);
+                return true;
+            }
+        });
 
     }
 

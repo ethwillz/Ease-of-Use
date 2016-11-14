@@ -1,6 +1,7 @@
 package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +51,9 @@ public class Search extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         v = getView();
 
+        final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
+        search.setTypeface(main);
+
         //Sets up some more variables and intializes the views
         super.onActivityCreated(savedInstanceState);
 
@@ -98,7 +102,7 @@ public class Search extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String text = search.getText().toString();
+                String text = search.getText().toString().toLowerCase();
                 mAdapter.filterProducts(text);
             }
 

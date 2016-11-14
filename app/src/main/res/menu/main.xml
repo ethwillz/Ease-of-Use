@@ -6,13 +6,6 @@
     android:id="@+id/menu">
 
     <item
-        android:id="@+id/action_settings"
-        android:title="Settings"
-        android:icon="@drawable/settings"
-        app:showAsAction="always">
-    </item>
-
-    <item
         android:id="@+id/action_search"
         android:title="Search"
         android:icon="@drawable/search"

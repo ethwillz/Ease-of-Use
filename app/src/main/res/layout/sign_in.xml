@@ -41,6 +41,14 @@
             tools:text="Firebase User ID: 123456789abc"
             android:textColor="#ffffff"/>
 
+        <TextView
+            android:id="@+id/directions"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            tools:text="Click back to browse"
+            android:textColor="#ffffff"
+            android:visibility="visible" />
+
     </LinearLayout>
 
 

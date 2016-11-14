@@ -3,16 +3,21 @@ package com.ethwillz.ethan.easeofuse;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -66,6 +71,11 @@ public class Main extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
+        MobileAds.initialize(v.getContext(), "ca-app-pub-5566797500264030~3966962306");
+        final AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1BF89AB15C45335B1CA8BCE94927DA8C").build();
+        mAdView.loadAd(adRequest);
+
         //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
@@ -79,6 +89,7 @@ public class Main extends Fragment {
                     if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
                         ImageButton add = (ImageButton) v.findViewById(R.id.add_button);
                         add.setVisibility(View.VISIBLE);
+                        mAdView.setVisibility(View.INVISIBLE);
                     }
                 }
 

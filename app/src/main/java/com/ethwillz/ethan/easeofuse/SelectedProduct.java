@@ -40,6 +40,7 @@ public class SelectedProduct extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         buy = (Button) findViewById(R.id.buy);
         save = (Button) findViewById(R.id.save);
@@ -54,21 +55,39 @@ public class SelectedProduct extends AppCompatActivity {
 
         Picasso.with(this).load(url).into((ImageView) findViewById(R.id.image));
 
+        final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
+
         TextView title = (TextView) findViewById(R.id.title);
         TextView description = (TextView) findViewById(R.id.description);
         TextView price = (TextView) findViewById(R.id.price);
         TextView recommendation = (TextView) findViewById(R.id.recommendation);
 
+        title.setTypeface(main);
+        description.setTypeface(main);
+        price.setTypeface(main);
+        recommendation.setTypeface(main);
         title.setText(i.getExtras().getString("title"));
         description.setText(i.getExtras().getString("description"));
         price.setText(i.getExtras().getString("price"));
         recommendation.setText(i.getExtras().getString("recommendation"));
+
+        buy.setTypeface(main);
+        save.setTypeface(main);
+
         id = i.getExtras().getString("id");
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 numItems = dataSnapshot.child("saved").getChildrenCount();
+
+                //Adds relevant information about each product to a List
+                for (long i = dataSnapshot.child("saved").getChildrenCount()-1; i >= 0; i--) {
+                    if (dataSnapshot.child("saved").child("" + i).child("user").getValue().toString().equals(user.getUid()) && dataSnapshot.child("saved").child("" + i).child("product").getValue().toString().equals(id)) {
+                        save.setText("Saved");
+                        save.setEnabled(false);
+                    }
+                }
             }
 
             @Override
