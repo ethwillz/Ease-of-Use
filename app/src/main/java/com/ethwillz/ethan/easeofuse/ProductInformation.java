@@ -1,5 +1,8 @@
 package com.ethwillz.ethan.easeofuse;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 public class ProductInformation {
     private String imageUrl;
     private String title;
@@ -23,6 +26,19 @@ public class ProductInformation {
         this.style = style;
         this.user = user;
         this.productID = productID;
+    }
+
+    protected ProductInformation(Parcel in) {
+        imageUrl = in.readString();
+        title = in.readString();
+        description = in.readString();
+        link = in.readString();
+        price = in.readString();
+        recommendation = in.readString();
+        type = in.readString();
+        style = in.readString();
+        user = in.readString();
+        productID = in.readString();
     }
 
     public String getImageUrl(){ return imageUrl; }
@@ -54,4 +70,5 @@ public class ProductInformation {
 
     public String getProductID(){ return productID; }
     public void setProductID(String productID) { this.productID = productID; }
+
 }

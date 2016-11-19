@@ -13,10 +13,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +48,15 @@ public class Search extends Fragment {
         View view = inflater.inflate(R.layout.search, container, false);
         search = (EditText) view.findViewById(R.id.searchbar);
 
+        ImageButton add = (ImageButton) view.findViewById(R.id.add_button);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), AddProduct.class);
+                startActivity(i);
+            }
+        });
+
         return view;
     }
 
@@ -62,12 +75,27 @@ public class Search extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
+        MobileAds.initialize(v.getContext(), "ca-app-pub-5566797500264030~3966962306");
+        final AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1BF89AB15C45335B1CA8BCE94927DA8C").build();
+        mAdView.loadAd(adRequest);
+
         //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                //Checks if user is authorized to control visibility of add button and banner ad
+                if(user != null) {
+                    String uid = user.getUid();
+                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
+                        ImageButton add = (ImageButton) v.findViewById(R.id.add_button);
+                        add.setVisibility(View.VISIBLE);
+                        mAdView.setVisibility(View.INVISIBLE);
+                    }
+                }
 
                 //Adds relevant information about each product to a List
                 for (long i = dataSnapshot.child("products").getChildrenCount()-1; i >= 0; i--) {

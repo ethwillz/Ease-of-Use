@@ -5,12 +5,4 @@
     tools:context=".Main"
     android:id="@+id/menu">
 
-    <item
-        android:id="@+id/action_search"
-        android:title="Search"
-        android:icon="@drawable/search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always|collapseActionView">
-    </item>
-
 </menu>

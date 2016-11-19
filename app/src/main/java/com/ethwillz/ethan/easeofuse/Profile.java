@@ -6,13 +6,16 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -26,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -38,22 +42,45 @@ import static android.app.Activity.RESULT_OK;
 
 public class Profile extends Fragment {
     View v;
-    ImageView pic;
     TextView displayName;
     TextView uid;
     TextView savedTitle;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
+    ArrayList<ProductInformation> products = new ArrayList<>();
     FirebaseUser user;
-    ArrayList<String> savedItems = new ArrayList<>();
     RecyclerView savedGrid;
     private GridAdapter mAdapter;
     GridLayoutManager layout;
+    AppBarLayout appBarLayout;
+    ProductInformation info;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);
+
+        RecyclerView savedGrid = (RecyclerView) view.findViewById(R.id.savedGrid);
+        appBarLayout = ((AppBarLayout) view.findViewById(R.id.appBar));
+
+        /*
+        savedGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int scrollDy = 0;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                scrollDy += dy;
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(scrollDy==0&&(newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE))
+                {
+                    appBarLayout.setExpanded(true);
+                }
+            }
+        });
+        */
 
         // Inflate the layout for this fragment
         return view;
@@ -63,6 +90,9 @@ public class Profile extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Database.Product all = new Database.Product();
+        products = all.getAllProducts();
+
         v = getView();
         user = FirebaseAuth.getInstance().getCurrentUser();
         layout = new GridLayoutManager(v.getContext(), 2);
@@ -70,42 +100,7 @@ public class Profile extends Fragment {
         savedGrid.setLayoutManager(layout);
         savedGrid.setHasFixedSize(true);
 
-        //Populates the recyclerview with the name, description, and photo for all products in the database
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //Adds relevant information about each product to a List
-                for (long i = dataSnapshot.child("saved").getChildrenCount()-1; i >= 0; i--) {
-                    if (dataSnapshot.child("saved").child("" + i).child("user").getValue().toString().equals(user.getUid())) {
-                        System.out.println(dataSnapshot.child("saved").child("" + i).child("product").getValue().toString());
-                        savedItems.add(dataSnapshot.child("saved").child("" + i).child("product").getValue().toString());
-                    }
-                }
-
-                for(int i = 0; i < savedItems.size(); i++){
-                    String url = dataSnapshot.child("products").child(savedItems.get(i)).child("downloadUrl").getValue().toString();
-                    String title = dataSnapshot.child("products").child(savedItems.get(i)).child("name").getValue().toString();
-                    String description = dataSnapshot.child("products").child(savedItems.get(i)).child("description").getValue().toString();
-                    String link = dataSnapshot.child("products").child(savedItems.get(i)).child("link").getValue().toString();
-                    String price = dataSnapshot.child("products").child(savedItems.get(i)).child("price").getValue().toString();
-                    String recommendation = dataSnapshot.child("products").child(savedItems.get(i)).child("recommendation").getValue().toString();
-                    String type = dataSnapshot.child("products").child(savedItems.get(i)).child("type").getValue().toString();
-                    String style = dataSnapshot.child("products").child(savedItems.get(i)).child("style").getValue().toString();
-                    String poster = dataSnapshot.child("products").child(savedItems.get(i)).child("user").getValue().toString();
-                    String id = savedItems.get(i);
-                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id);
-                    items.add(item);
-                }
-
-                mAdapter = new GridAdapter(items);
-                savedGrid.setAdapter(mAdapter);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        populateGrid();
 
         final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
         final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
@@ -130,7 +125,37 @@ public class Profile extends Fragment {
                 return true;
             }
         });
+    }
+    public void populateGrid(){
+        //Populates the recyclerview with the name, description, and photo for all products in the database
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("saved").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    System.out.println(d.child("user").getValue().toString());
+                    if(d.child("user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                        items.add(getProductInfo(d.child("product").getValue().toString()));
+                    }
+                }
+                //Sets adapter to the list of products
+                mAdapter = new GridAdapter(items);
+                savedGrid.setAdapter(mAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
+    public ProductInformation getProductInfo(String productID){
+        for(int i = 0; i < products.size(); i++){
+            System.out.println(products.get(i).getImageUrl());
+            if(products.get(i).getProductID().equals(productID)) {
+                return products.get(i);
+            }
+        }
+        return info;
     }
 
 }

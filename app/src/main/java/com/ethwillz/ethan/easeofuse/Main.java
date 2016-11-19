@@ -27,20 +27,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Main extends Fragment {
+public class Main extends Fragment{
     //Sets up all of the various variables needed throughout the class
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
-    static final int FILTER_REQUEST = 743;
-    static final int RESULT_GOOD = 879;
-    private String savedStyle = "All";
-    private String savedType = "All";
-    SearchView mSearchView;
     View v;
+    ArrayList<String> savedItems = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,20 +94,27 @@ public class Main extends Fragment {
                 }
 
                 //Adds relevant information about each product to a List
-                for (long i = dataSnapshot.child("products").getChildrenCount()-1; i >= 0; i--) {
-                    String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
-                    String title = dataSnapshot.child("products").child(i + "").child("name").getValue().toString();
-                    String description = dataSnapshot.child("products").child(i + "").child("description").getValue().toString();
-                    String link = dataSnapshot.child("products").child(i+"").child("link").getValue().toString();
-                    String price = dataSnapshot.child("products").child(i+"").child("price").getValue().toString();
-                    String recommendation = dataSnapshot.child("products").child(i+"").child("recommendation").getValue().toString();
-                    String type = dataSnapshot.child("products").child(i+"").child("type").getValue().toString();
-                    String style = dataSnapshot.child("products").child(i+"").child("style").getValue().toString();
-                    String poster = dataSnapshot.child("products").child(i+"").child("user").getValue().toString();
-                    String id = i + "";
+                for (long i = dataSnapshot.child("saved").getChildrenCount()-1; i >= 0; i--) {
+                    savedItems.add(dataSnapshot.child("saved").child("" + i).child("product").getValue().toString());
+                }
+
+                savedItems = orderByFrequency(savedItems);
+
+                for(int i = 0; i < savedItems.size(); i++) {
+                    String url = dataSnapshot.child("products").child(savedItems.get(i)).child("downloadUrl").getValue().toString();
+                    String title = dataSnapshot.child("products").child(savedItems.get(i)).child("name").getValue().toString();
+                    String description = dataSnapshot.child("products").child(savedItems.get(i)).child("description").getValue().toString();
+                    String link = dataSnapshot.child("products").child(savedItems.get(i)).child("link").getValue().toString();
+                    String price = dataSnapshot.child("products").child(savedItems.get(i)).child("price").getValue().toString();
+                    String recommendation = dataSnapshot.child("products").child(savedItems.get(i)).child("recommendation").getValue().toString();
+                    String type = dataSnapshot.child("products").child(savedItems.get(i)).child("type").getValue().toString();
+                    String style = dataSnapshot.child("products").child(savedItems.get(i)).child("style").getValue().toString();
+                    String poster = dataSnapshot.child("products").child(savedItems.get(i)).child("user").getValue().toString();
+                    String id = savedItems.get(i);
                     ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id);
                     items.add(item);
                 }
+
                 //Sets adapter to the list of products
                 mAdapter = new ProductAdapter(items);
                 mRecyclerView.setAdapter(mAdapter);
@@ -116,5 +123,23 @@ public class Main extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public ArrayList<String> orderByFrequency(ArrayList<String> items){
+        final Map<String, Integer> products = new HashMap<>();
+        for(String item : items){
+            products.put(item, 1 + (products.containsKey(item) ? products.get(item) : 0));
+        }
+
+        Comparator<String> keyComp = new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return products.get(t1) - products.get(s);
+            }
+        };
+        ArrayList<String> keys = new ArrayList<>(products.keySet());
+
+        Sort.mergeSort(products, keys, keyComp);
+        return keys;
     }
 }
