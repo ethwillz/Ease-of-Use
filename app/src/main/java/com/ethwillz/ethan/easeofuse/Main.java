@@ -1,6 +1,7 @@
 package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -37,10 +38,9 @@ public class Main extends Fragment{
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
-    View v;
-    ArrayList<String> savedItems = new ArrayList<>();
+    HashMap<String, Integer> products = new HashMap<>();
+    Database.Product savedItems = new Database.Product();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +61,7 @@ public class Main extends Fragment{
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        v = getView();
+        View v = getView();
 
         //Sets up some more variables and intializes the views
         super.onActivityCreated(savedInstanceState);
@@ -77,46 +77,18 @@ public class Main extends Fragment{
         mAdView.loadAd(adRequest);
 
         //Populates the recyclerview with the name, description, and photo for all products in the database
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("saved").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                //Checks if user is authorized to control visibility of add button and banner ad
-                if(user != null) {
-                    String uid = user.getUid();
-                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
-                        ImageButton add = (ImageButton) v.findViewById(R.id.add_button);
-                        add.setVisibility(View.VISIBLE);
-                        mAdView.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                //Adds relevant information about each product to a List
-                for (long i = dataSnapshot.child("saved").getChildrenCount()-1; i >= 0; i--) {
-                    savedItems.add(dataSnapshot.child("saved").child("" + i).child("product").getValue().toString());
-                }
-
-                savedItems = orderByFrequency(savedItems);
-
-                for(int i = 0; i < savedItems.size(); i++) {
-                    String url = dataSnapshot.child("products").child(savedItems.get(i)).child("downloadUrl").getValue().toString();
-                    String title = dataSnapshot.child("products").child(savedItems.get(i)).child("name").getValue().toString();
-                    String description = dataSnapshot.child("products").child(savedItems.get(i)).child("description").getValue().toString();
-                    String link = dataSnapshot.child("products").child(savedItems.get(i)).child("link").getValue().toString();
-                    String price = dataSnapshot.child("products").child(savedItems.get(i)).child("price").getValue().toString();
-                    String recommendation = dataSnapshot.child("products").child(savedItems.get(i)).child("recommendation").getValue().toString();
-                    String type = dataSnapshot.child("products").child(savedItems.get(i)).child("type").getValue().toString();
-                    String style = dataSnapshot.child("products").child(savedItems.get(i)).child("style").getValue().toString();
-                    String poster = dataSnapshot.child("products").child(savedItems.get(i)).child("user").getValue().toString();
-                    String id = savedItems.get(i);
-                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id);
-                    items.add(item);
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    String productID = d.child("product").getValue().toString();
+                    products.put(productID, 1 + (products.containsKey(productID) ? products.get(productID) : 0));
                 }
 
                 //Sets adapter to the list of products
-                mAdapter = new ProductAdapter(items);
+                mAdapter = new ProductAdapter(new Organize().doInBackground(new TaskParams(products, items)));
                 mRecyclerView.setAdapter(mAdapter);
             }
             @Override
@@ -125,21 +97,27 @@ public class Main extends Fragment{
         });
     }
 
-    public ArrayList<String> orderByFrequency(ArrayList<String> items){
-        final Map<String, Integer> products = new HashMap<>();
-        for(String item : items){
-            products.put(item, 1 + (products.containsKey(item) ? products.get(item) : 0));
+    public class Organize extends AsyncTask<TaskParams, Void, ArrayList<ProductInformation>>{
+        ArrayList<ProductInformation> sorted;
+        @Override
+        protected ArrayList<ProductInformation> doInBackground(TaskParams... taskParamses) {
+            sorted = savedItems.getSavedProducts(taskParamses[0].map);
+            sorted = Sort.mergeSort(taskParamses[0].map, sorted);
+            return sorted;
         }
 
-        Comparator<String> keyComp = new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                return products.get(t1) - products.get(s);
-            }
-        };
-        ArrayList<String> keys = new ArrayList<>(products.keySet());
+        protected void onPostExecute(ArrayList<ProductInformation> result){
 
-        Sort.mergeSort(products, keys, keyComp);
-        return keys;
+        }
+    }
+
+    public class TaskParams{
+        HashMap<String, Integer> map;
+        ArrayList<ProductInformation> info;
+
+        public TaskParams(HashMap<String, Integer> map, ArrayList<ProductInformation> info){
+            this.map = map;
+            this.info = info;
+        }
     }
 }

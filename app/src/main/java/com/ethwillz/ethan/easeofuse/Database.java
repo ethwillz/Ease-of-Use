@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Database {
     static class Product{
@@ -43,6 +44,16 @@ public class Database {
 
         public ArrayList<ProductInformation> getAllProducts(){
             return items;
+        }
+
+        public ArrayList<ProductInformation> getSavedProducts(HashMap<String, Integer> map){
+            ArrayList<ProductInformation> saved = new ArrayList<>();
+            for(int i = 0; i < items.size(); i++){
+                if(map.containsKey(items.get(i).getProductID())){
+                    saved.add(items.get(i));
+                }
+            }
+            return saved;
         }
     }
 }

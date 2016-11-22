@@ -55,7 +55,8 @@
             android:name=".MainView"
             android:label="@string/title_activity_main_view"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

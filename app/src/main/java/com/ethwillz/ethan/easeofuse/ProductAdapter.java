@@ -105,7 +105,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.mImageUrl.setText(products.get(position).getImageUrl());
         holder.mProductID.setText(products.get(position).getProductID());
 
-        Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).placeholder(R.drawable.logo).into(holder.mImage);
+        Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).into(holder.mImage);
     }
 
     //Returns count of products in list

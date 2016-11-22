@@ -43,9 +43,6 @@ import static android.app.Activity.RESULT_OK;
 public class Profile extends Fragment {
     View v;
     TextView displayName;
-    TextView uid;
-    TextView savedTitle;
-    DatabaseReference mDatabase;
     ArrayList<ProductInformation> items = new ArrayList<>();
     ArrayList<ProductInformation> products = new ArrayList<>();
     FirebaseUser user;
@@ -63,7 +60,6 @@ public class Profile extends Fragment {
         RecyclerView savedGrid = (RecyclerView) view.findViewById(R.id.savedGrid);
         appBarLayout = ((AppBarLayout) view.findViewById(R.id.appBar));
 
-        /*
         savedGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int scrollDy = 0;
             @Override
@@ -80,7 +76,6 @@ public class Profile extends Fragment {
                 }
             }
         });
-        */
 
         // Inflate the layout for this fragment
         return view;
@@ -105,8 +100,8 @@ public class Profile extends Fragment {
         final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
         final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
         displayName = (TextView) v.findViewById(R.id.displayName);
-        uid = (TextView) v.findViewById(R.id.uid);
-        savedTitle = (TextView) v.findViewById(R.id.savedTitle);
+        TextView uid = (TextView) v.findViewById(R.id.uid);
+        TextView savedTitle = (TextView) v.findViewById(R.id.savedTitle);
 
         displayName.setTypeface(two);
         uid.setTypeface(main);
@@ -128,7 +123,7 @@ public class Profile extends Fragment {
     }
     public void populateGrid(){
         //Populates the recyclerview with the name, description, and photo for all products in the database
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("saved").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
