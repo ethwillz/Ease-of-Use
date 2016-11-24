@@ -20,16 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".InitialScreen"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SignIn"
@@ -54,9 +48,9 @@
         <activity
             android:name=".MainView"
             android:label="@string/title_activity_main_view"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="stateHidden" />
     </application>
 
 </manifest>

@@ -112,14 +112,16 @@ public class Profile extends Fragment {
             uid.setText(user.getUid());
         }
 
+        /*
         displayName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Intent i = new Intent(v.getContext(), SignIn.class);
+                Intent i = new Intent(v.getContext(), Account.class);
                 startActivity(i);
                 return true;
             }
         });
+        */
     }
     public void populateGrid(){
         //Populates the recyclerview with the name, description, and photo for all products in the database

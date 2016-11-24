@@ -28,19 +28,6 @@ public class ProductInformation {
         this.productID = productID;
     }
 
-    protected ProductInformation(Parcel in) {
-        imageUrl = in.readString();
-        title = in.readString();
-        description = in.readString();
-        link = in.readString();
-        price = in.readString();
-        recommendation = in.readString();
-        type = in.readString();
-        style = in.readString();
-        user = in.readString();
-        productID = in.readString();
-    }
-
     public String getImageUrl(){ return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 

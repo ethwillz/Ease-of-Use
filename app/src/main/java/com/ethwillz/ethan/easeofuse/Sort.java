@@ -20,8 +20,8 @@ class Sort {
         for (int i = mid; i < keys.size(); i++) {
             right.add(keys.get(i));
         }
-        mergeSort(products, left);
-        mergeSort(products, right);
+        left = mergeSort(products, left);
+        right = mergeSort(products, right);
         return merge(products, left, right);
     }
 

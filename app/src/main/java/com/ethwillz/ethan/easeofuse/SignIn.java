@@ -75,8 +75,14 @@ public class SignIn extends AppCompatActivity implements
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+        //findViewById(R.id.sign_out_button).setOnClickListener(this);
+        findViewById(R.id.disconnect_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), MainView.class);
+                startActivity(i);
+            }
+        });
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -204,9 +210,9 @@ public class SignIn extends AppCompatActivity implements
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
             findViewById(R.id.directions).setVisibility(View.VISIBLE);
-            Button out = (Button) findViewById(R.id.sign_out_button);
+            //Button out = (Button) findViewById(R.id.sign_out_button);
             Button disconnect = (Button) findViewById(R.id.disconnect_button);
-            out.setTypeface(main);
+            //out.setTypeface(main);
             disconnect.setTypeface(main);
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -256,9 +262,11 @@ public class SignIn extends AppCompatActivity implements
             case R.id.sign_in_button:
                 signIn();
                 break;
+            /*
             case R.id.sign_out_button:
                 signOut();
                 break;
+                */
             case R.id.disconnect_button:
                 revokeAccess();
                 break;
