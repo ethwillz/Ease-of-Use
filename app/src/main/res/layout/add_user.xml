@@ -9,23 +9,37 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-
-        <TextView
-            android:layout_width="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/usersAppBar">
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_height="match_parent"
-            android:text="Add user by username"/>
-
-        <EditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="username"
-            android:id="@+id/searchUser"/>
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Add user by username"
+                android:textColor="#ffffff"
+                android:id="@+id/title"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:textSize="20dp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="username"
+                android:id="@+id/searchUser"
+                android:textColorHint="#B2B6B8"
+                android:textColor="#ffffff"
+                android:layout_marginTop="25dp"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/users"
+        android:id="@+id/userCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

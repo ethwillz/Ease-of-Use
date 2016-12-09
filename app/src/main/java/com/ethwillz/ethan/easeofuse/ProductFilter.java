@@ -42,6 +42,4 @@ public class ProductFilter extends Filter {
         adapter.setList(filteredProductList);
         adapter.notifyDataSetChanged();
     }
-
-
 }

@@ -1,13 +1,13 @@
 package com.ethwillz.ethan.easeofuse;
 
-public class User {
+public class UserInformation {
 
     String uid;
     String userName;
     String imageUrl;
     String displayName;
 
-    public User(String uid, String userName, String imageUrl, String displayName){
+    public UserInformation(String uid, String userName, String imageUrl, String displayName){
         this.uid = uid;
         this.userName = userName;
         this.imageUrl = imageUrl;

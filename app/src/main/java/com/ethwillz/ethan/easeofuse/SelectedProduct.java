@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class SelectedProduct extends AppCompatActivity {
@@ -76,16 +77,20 @@ public class SelectedProduct extends AppCompatActivity {
 
         id = i.getExtras().getString("id");
 
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabase.child("saved").child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numItems = dataSnapshot.child("saved").getChildrenCount();
+                Iterator<DataSnapshot> savedIDs = dataSnapshot.getChildren().iterator();
 
-                //Adds relevant information about each product to a List
-                for (long i = dataSnapshot.child("saved").getChildrenCount()-1; i >= 0; i--) {
-                    if (dataSnapshot.child("saved").child("" + i).child("add_user").getValue().toString().equals(user.getUid()) && dataSnapshot.child("saved").child("" + i).child("product").getValue().toString().equals(id)) {
+                for(int i = 0; i < dataSnapshot.getChildrenCount(); i++){
+                    if(savedIDs.next().getKey().equals(id)){
                         save.setText("Saved");
-                        save.setEnabled(false);
+                        save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
                     }
                 }
             }
@@ -109,13 +114,15 @@ public class SelectedProduct extends AppCompatActivity {
                 //Adds listener for the database to get the number of products stored which helps in naming scheme of new product
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                Map<String, String> upload = new HashMap<>();
-                upload.put("product", id);
-                upload.put("add_user", user.getUid());
-                mDatabase.child("saved").child(numItems + "").setValue(upload);
+                mDatabase.child("saved").child(user.getUid()).child(id).setValue(getIntent().getStringExtra("uid"));
 
                 save.setText(R.string.saved);
-                save.setBackgroundResource(R.color.purple);
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
             }
         });
     }

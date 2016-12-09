@@ -14,8 +14,9 @@ public class ProductInformation {
     private String style;
     private String user;
     private String productID;
+    private String uid;
 
-    public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation, String type, String style, String user, String productID){
+    public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation, String type, String style, String user, String productID, String guid){
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
@@ -26,6 +27,7 @@ public class ProductInformation {
         this.style = style;
         this.user = user;
         this.productID = productID;
+        this.uid = uid;
     }
 
     public String getImageUrl(){ return imageUrl; }
@@ -58,4 +60,6 @@ public class ProductInformation {
     public String getProductID(){ return productID; }
     public void setProductID(String productID) { this.productID = productID; }
 
+    public String getUid(){ return uid; }
+    public void setUid(String uid) { this.uid = uid; }
 }

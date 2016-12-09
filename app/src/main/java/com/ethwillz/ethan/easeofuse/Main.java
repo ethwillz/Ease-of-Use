@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Main extends Fragment{
     //Sets up all of the various variables needed throughout the class
@@ -73,8 +74,11 @@ public class Main extends Fragment{
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot d : dataSnapshot.getChildren()){
-                    String productID = d.child("product").getValue().toString();
-                    products.put(productID, 1 + (products.containsKey(productID) ? products.get(productID) : 0));
+                    Iterator<DataSnapshot> productIDs = d.getChildren().iterator();
+                    for(int i = 0; i < d.getChildrenCount(); i++){
+                        String productID = productIDs.next().getKey();
+                        products.put(productID, 1 + (products.containsKey(productID) ? products.get(productID) : 0));
+                    }
                 }
 
                 //Sets adapter to the list of products
@@ -92,7 +96,7 @@ public class Main extends Fragment{
         @Override
         protected ArrayList<ProductInformation> doInBackground(TaskParams... taskParamses) {
             sorted = savedItems.getSavedProducts(taskParamses[0].map);
-            sorted = Sort.mergeSort(taskParamses[0].map, sorted);
+            sorted = ProductSort.mergeSort(taskParamses[0].map, sorted);
             return sorted;
         }
 

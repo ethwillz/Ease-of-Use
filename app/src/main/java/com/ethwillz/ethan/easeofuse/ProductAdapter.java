@@ -36,6 +36,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private TextView mUser;
         private TextView mImageUrl;
         private TextView mProductID;
+        private TextView mUid;
 
         public ProductViewHolder(View v){
             super(v);
@@ -53,6 +54,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             mUrl = (TextView) v.findViewById(R.id.item_url);
             mUser = (TextView) v.findViewById(R.id.item_user);
             mProductID = (TextView) v.findViewById(R.id.item_id);
+            mUid = (TextView) v.findViewById(R.id.item_uid);
 
             mUser.setTypeface(main);
             mTitle.setTypeface(two);
@@ -71,6 +73,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             String recommendation = mRecommendation.getText().toString();
             String image = mImageUrl.getText().toString();
             String id = mProductID.getText().toString();
+            String uid = mUid.getText().toString();
             Intent i = new Intent(view.getContext(), SelectedProduct.class);
             i.putExtra("title", title);
             i.putExtra("description", description);
@@ -79,6 +82,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             i.putExtra("recommendation", recommendation);
             i.putExtra("image", image);
             i.putExtra("id", id);
+            i.putExtra("uid", uid);
             view.getContext().startActivity(i);
         }
     }
@@ -104,6 +108,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.mUser.setText(products.get(position).getUser());
         holder.mImageUrl.setText(products.get(position).getImageUrl());
         holder.mProductID.setText(products.get(position).getProductID());
+        holder.mUid.setText(products.get(position).getUid());
 
         Picasso.with(holder.itemView.getContext()).load(products.get(position).getImageUrl()).into(holder.mImage);
     }

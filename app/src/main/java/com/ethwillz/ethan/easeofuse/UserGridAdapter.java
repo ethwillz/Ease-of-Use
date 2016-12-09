@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserViewHolder>{
-    List<User> users;
+    List<UserInformation> users;
     ProductFilter filter;
 
     //Constructor for adapter which sets the list of products and initializes the filter
-    public UserGridAdapter(ArrayList<User> people){
+    public UserGridAdapter(ArrayList<UserInformation> people){
         users = people;
     }
 
@@ -38,7 +38,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
 
             mDisplayName = (TextView) v.findViewById(R.id.displayName);
             mImage = (ImageView) v.findViewById(R.id.image);
-            mUid = (TextView) v.findViewById(R.id.item_price);
+            mUid = (TextView) v.findViewById(R.id.uid);
             mUserName = (TextView) v.findViewById(R.id.userName);
 
             mDisplayName.setTypeface(main);
@@ -81,7 +81,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
     }
 
     //Sets visible list to a new list
-    public void setList(List<User> list){
+    public void setList(List<UserInformation> list){
         this.users = list;
     }
 

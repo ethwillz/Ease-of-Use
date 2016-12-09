@@ -104,8 +104,9 @@ public class Search extends Fragment {
                     String type = dataSnapshot.child("products").child(i+"").child("type").getValue().toString();
                     String style = dataSnapshot.child("products").child(i+"").child("style").getValue().toString();
                     String poster = dataSnapshot.child("products").child(i+"").child("user").getValue().toString();
+                    String uid = dataSnapshot.child("products").child(i+"").child("uid").getValue().toString();
                     String id = i + "";
-                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id);
+                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id, uid);
                     items.add(item);
                 }
                 //Sets adapter to the list of products

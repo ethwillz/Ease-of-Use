@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_view"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="6dp"
     android:layout_marginBottom="6dp"
@@ -17,38 +17,6 @@
         android:background="@drawable/cardviewback"
         android:orientation="vertical">
 
-        <!--Picture of product-->
-        <ImageView
-            android:id="@+id/image"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:layout_height="300dp"
-            android:layout_width="match_parent"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="10dp"/>
-
-        <!--Name of product-->
-        <TextView
-            android:id="@+id/item_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffff"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_centerHorizontal="true"
-            />
-
-        <!--Description of product-->
-        <TextView
-            android:id="@+id/uid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:textColor="#ffffff"
-            android:visibility="invisible"/>
-
         <!--Description of product-->
         <TextView
             android:id="@+id/userName"
@@ -57,7 +25,39 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp"/>
+
+        <!--Picture of product-->
+        <ImageView
+            android:id="@+id/image"
+            android:layout_margin="5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="225dp"
+            android:layout_width="match_parent"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="10dp"/>
+
+        <!--Name of product-->
+        <TextView
+            android:id="@+id/displayName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:textSize="50dp" />
+
+        <!--Invisible url of product for use when clicked-->
+        <TextView
+            android:id="@+id/uid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

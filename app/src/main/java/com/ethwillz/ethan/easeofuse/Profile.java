@@ -95,16 +95,13 @@ public class Profile extends Fragment {
         }
     }
     public void populateGrid(){
-        //Populates the recyclerview with the name, description, and photo for all products in the database
+        //Gets the saved items for a user
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("saved").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("saved").child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot d : dataSnapshot.getChildren()){
-                    System.out.println(d.child("user").getValue().toString());
-                    if(d.child("user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                        items.add(getProductInfo(d.child("product").getValue().toString()));
-                    }
+                    items.add(getProductInfo(d.getKey()));
                 }
                 //Sets adapter to the list of products
                 mAdapter = new ProductGridAdapter(items);
