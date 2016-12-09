@@ -47,61 +47,28 @@ public class MainView extends AppCompatActivity {
         Main main = new Main();
         Profile profile = new Profile();
         Search search = new Search();
+        AddUser addUser = new AddUser();
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mPagerAdapter.addFragment(search);
         mPagerAdapter.addFragment(main);
+        mPagerAdapter.addFragment(addUser);
         mPagerAdapter.addFragment(profile);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(3);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.homeicon);
         tabLayout.getTabAt(1).setIcon(R.drawable.hoticon);
-        tabLayout.getTabAt(2).setIcon(R.drawable.usericon);
-
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_view, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
+        tabLayout.getTabAt(2).setIcon(R.drawable.addicon);
+        tabLayout.getTabAt(3).setIcon(R.drawable.usericon);
     }
 
     /**
@@ -130,5 +97,9 @@ public class MainView extends AppCompatActivity {
         public int getCount() {
             return mFragments.size();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

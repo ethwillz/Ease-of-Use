@@ -83,7 +83,7 @@ public class SelectedProduct extends AppCompatActivity {
 
                 //Adds relevant information about each product to a List
                 for (long i = dataSnapshot.child("saved").getChildrenCount()-1; i >= 0; i--) {
-                    if (dataSnapshot.child("saved").child("" + i).child("user").getValue().toString().equals(user.getUid()) && dataSnapshot.child("saved").child("" + i).child("product").getValue().toString().equals(id)) {
+                    if (dataSnapshot.child("saved").child("" + i).child("add_user").getValue().toString().equals(user.getUid()) && dataSnapshot.child("saved").child("" + i).child("product").getValue().toString().equals(id)) {
                         save.setText("Saved");
                         save.setEnabled(false);
                     }
@@ -111,10 +111,11 @@ public class SelectedProduct extends AppCompatActivity {
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 Map<String, String> upload = new HashMap<>();
                 upload.put("product", id);
-                upload.put("user", user.getUid());
+                upload.put("add_user", user.getUid());
                 mDatabase.child("saved").child(numItems + "").setValue(upload);
 
                 save.setText(R.string.saved);
+                save.setBackgroundResource(R.color.purple);
             }
         });
     }

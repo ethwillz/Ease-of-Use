@@ -27,7 +27,7 @@
             android:scaleType="fitCenter"
             android:layout_marginTop="10dp"/>
 
-        <!--User who uploaded product-->
+        <!--AddUser who uploaded product-->
         <TextView
             android:id="@+id/item_user"
             android:layout_width="match_parent"

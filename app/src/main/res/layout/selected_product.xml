@@ -3,7 +3,8 @@
 <ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true">
 
     <!--Detailed view of a specific product-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,6 +18,7 @@
         tools:context="com.ethwillz.ethan.easeofuse.SelectedProduct"
         android:background="#000000"
         android:orientation="vertical"
+        android:clickable="true"
         >
 
         <!--Name of the chosen product-->
@@ -78,9 +80,10 @@
                 android:text="Buy"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/buy"
-                android:background="@drawable/enter_button"
+                android:background="@drawable/button_selector"
                 android:textColor="#000000"
-                android:layout_marginRight="15dp"/>
+                android:layout_marginRight="15dp"
+                android:clickable="true"/>
 
             <!--Button which saves product to personal list-->
             <Button
@@ -90,8 +93,9 @@
                 android:text="Save"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/save"
-                android:background="@drawable/enter_button"
-                android:textColor="#000000"/>
+                android:background="@drawable/button_selector"
+                android:textColor="#000000"
+                android:clickable="true" />
 
         </LinearLayout>
 

@@ -6,15 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -45,7 +41,7 @@ public class Search extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.search, container, false);
+        View view = inflater.inflate(R.layout.products_main_feed, container, false);
         search = (EditText) view.findViewById(R.id.searchbar);
 
         ImageButton add = (ImageButton) view.findViewById(R.id.add_button);
@@ -87,7 +83,7 @@ public class Search extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                //Checks if user is authorized to control visibility of add button and banner ad
+                //Checks if add_user is authorized to control visibility of add button and banner ad
                 if(user != null) {
                     String uid = user.getUid();
                     if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {

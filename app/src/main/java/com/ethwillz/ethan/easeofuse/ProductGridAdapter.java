@@ -14,12 +14,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ProductViewHolder>{
+public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.ProductViewHolder>{
     List<ProductInformation> products;
-    FilterProducts filter;
+    ProductFilter filter;
 
     //Constructor for adapter which sets the list of products and initializes the filter
-    public GridAdapter(ArrayList<ProductInformation> items){
+    public ProductGridAdapter(ArrayList<ProductInformation> items){
         products = items;
     }
 
@@ -83,10 +83,10 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ProductViewHol
     }
 
     @Override
-    public GridAdapter.ProductViewHolder onCreateViewHolder(ViewGroup parent,
-                                                               int viewType) {
+    public ProductGridAdapter.ProductViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                   int viewType) {
         View v = (View)LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.saved_cards, parent, false);
+                .inflate(R.layout.product_saved_cards, parent, false);
 
         return new ProductViewHolder(v);
     }

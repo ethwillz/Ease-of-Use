@@ -6,13 +6,13 @@ import java.util.List;
 import android.widget.Filter;
 
 //Extends Filter class to filter the recyclerview based on different criteria
-public class FilterProducts extends Filter {
+public class ProductFilter extends Filter {
     private List<ProductInformation> productList;
     private List<ProductInformation> filteredProductList;
     private ProductAdapter adapter;
 
     //Constructor for filter wich sets the original product list and adapter as well as intializes the new list
-    public FilterProducts(List<ProductInformation> productList, ProductAdapter adapter){
+    public ProductFilter(List<ProductInformation> productList, ProductAdapter adapter){
         this.productList = productList;
         this.adapter = adapter;
         this.filteredProductList = new ArrayList<>();

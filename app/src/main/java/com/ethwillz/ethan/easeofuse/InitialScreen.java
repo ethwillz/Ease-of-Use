@@ -18,7 +18,7 @@ public class InitialScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //If user is already registered it will bypass initial screen and go immediately to the main screen
+        //If add_user is already registered it will bypass initial screen and go immediately to the products_hot screen
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             onGoMain();
@@ -52,7 +52,7 @@ public class InitialScreen extends AppCompatActivity {
         logo8.setTypeface(main);
 
 
-        //All of the animations for the main page
+        //All of the animations for the products_hot page
         final Animation out1 = new AlphaAnimation(1, 0);
         final Animation out2 = new AlphaAnimation(1, 0);
         final Animation out3 = new AlphaAnimation(1, 0);
@@ -115,7 +115,7 @@ public class InitialScreen extends AppCompatActivity {
         });
     }
 
-    //Directs the user to the main activity
+    //Directs the add_user to the products_hot activity
     public void onGoMain() {
         Intent i = new Intent(this, MainView.class);
         startActivity(i);

@@ -16,12 +16,12 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder>{
     List<ProductInformation> products;
-    FilterProducts filter;
+    ProductFilter filter;
 
     //Constructor for adapter which sets the list of products and initializes the filter
     public ProductAdapter(ArrayList<ProductInformation> items){
         products = items;
-        filter = new FilterProducts(products, this);
+        filter = new ProductFilter(products, this);
     }
 
     //Viewholder which establishes the UI components of the card view that are going to be populated

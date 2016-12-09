@@ -84,8 +84,8 @@ public class SignIn extends AppCompatActivity implements
             }
         });
 
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // Configure sign-in to request the add_user's ID, email address, and basic
+        // user_profile. ID and basic user_profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -158,9 +158,9 @@ public class SignIn extends AppCompatActivity implements
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // If sign in fails, display a message to the add_user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
+                        // signed in add_user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Toast.makeText(SignIn.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -212,7 +212,7 @@ public class SignIn extends AppCompatActivity implements
             findViewById(R.id.directions).setVisibility(View.VISIBLE);
             //Button out = (Button) findViewById(R.id.sign_out_button);
             Button disconnect = (Button) findViewById(R.id.disconnect_button);
-            //out.setTypeface(main);
+            //out.setTypeface(products_hot);
             disconnect.setTypeface(main);
 
             mDatabase = FirebaseDatabase.getInstance().getReference();

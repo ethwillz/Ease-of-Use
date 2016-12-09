@@ -97,16 +97,16 @@ public class AddProduct extends AppCompatActivity {
             picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            //Toast lets user know the photo has been succesfully found
+            //Toast lets add_user know the photo has been succesfully found
             Toast.makeText(this, "Picture added successfully", Toast.LENGTH_LONG).show();
         }
     }
 
     public void add(View view){
-        //Sets up variables for the various fields the user entered information into
+        //Sets up variables for the various fields the add_user entered information into
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        //Progress spinner to let user know application is working
+        //Progress spinner to let add_user know application is working
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage("Saving Product");
         dialog.show();
@@ -130,7 +130,7 @@ public class AddProduct extends AppCompatActivity {
     }
 
     public void pictureSuccess(Uri downloadUrl){
-        //Finds UI elements which the user entered information into
+        //Finds UI elements which the add_user entered information into
         EditText name = (EditText) findViewById(R.id.nameBox);
         EditText link = (EditText) findViewById(R.id.linkBox);
         EditText price = (EditText) findViewById(R.id.priceBox);
@@ -149,7 +149,7 @@ public class AddProduct extends AppCompatActivity {
 
         //Creates map of all information and then adds it to the database
         Map<String, String> newProduct = new HashMap<>();
-        newProduct.put("user", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        newProduct.put("add_user", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         newProduct.put("name", name.getText().toString());
         newProduct.put("downloadUrl", downloadUrl.toString());
         newProduct.put("link", link.getText().toString());
@@ -160,7 +160,7 @@ public class AddProduct extends AppCompatActivity {
         newProduct.put("type", type);
         mDatabase.child("products").child(numItems + "").setValue(newProduct);
 
-        //Returns to main activity after new product entered into database
+        //Returns to products_hot activity after new product entered into database
         Intent i = new Intent(this, MainView.class);
         startActivity(i);
     }

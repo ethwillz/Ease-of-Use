@@ -1,14 +1,12 @@
 package com.ethwillz.ethan.easeofuse;
 
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Profile extends Fragment {
+public class UserProfile extends AppCompatActivity {
     View v;
     TextView displayName;
     ArrayList<ProductInformation> items = new ArrayList<>();
@@ -34,46 +32,19 @@ public class Profile extends Fragment {
     GridLayoutManager layout;
     AppBarLayout appBarLayout;
     ProductInformation info;
-    Button follow;
+    String uid;
     DatabaseReference mDatabase;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.user_profile, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        RecyclerView savedGrid = (RecyclerView) view.findViewById(R.id.savedGrid);
-        appBarLayout = ((AppBarLayout) view.findViewById(R.id.appBar));
-
-        savedGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int scrollDy = 0;
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                scrollDy += dy;
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(scrollDy==0&&(newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE))
-                {
-                    appBarLayout.setExpanded(true);
-                }
-            }
-        });
-
-        // Inflate the layout for this fragment
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        uid = getIntent().getStringExtra("uid");
 
         Database.Product all = new Database.Product();
         products = all.getAllProducts();
-
-        v = getView();
+        RecyclerView savedGrid = (RecyclerView) findViewById(R.id.savedGrid);
+        appBarLayout = ((AppBarLayout) findViewById(R.id.appBar));
         user = FirebaseAuth.getInstance().getCurrentUser();
         layout = new GridLayoutManager(v.getContext(), 2);
         savedGrid = (RecyclerView) v.findViewById(R.id.savedGrid);
@@ -93,16 +64,33 @@ public class Profile extends Fragment {
         if(user != null){
             displayName.setText(user.getDisplayName());
         }
+
+        savedGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int scrollDy = 0;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                scrollDy += dy;
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(scrollDy==0&&(newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE))
+                {
+                    appBarLayout.setExpanded(true);
+                }
+            }
+        });
     }
+
     public void populateGrid(){
         //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("saved").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot d : dataSnapshot.getChildren()){
-                    System.out.println(d.child("user").getValue().toString());
-                    if(d.child("user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    if(d.child("user").getValue().toString().equals(uid)){
                         items.add(getProductInfo(d.child("product").getValue().toString()));
                     }
                 }
