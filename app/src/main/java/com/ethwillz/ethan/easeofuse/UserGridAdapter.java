@@ -16,7 +16,7 @@ import java.util.List;
 
 public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserViewHolder>{
     List<UserInformation> users;
-    ProductFilter filter;
+    UserFilter filter;
 
     //Constructor for adapter which sets the list of products and initializes the filter
     public UserGridAdapter(ArrayList<UserInformation> people){
@@ -29,6 +29,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         private ImageView mImage;
         private TextView mUid;
         private TextView mUserName;
+        private TextView mImageUrl;
 
         public UserViewHolder(View v){
             super(v);
@@ -40,6 +41,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
             mImage = (ImageView) v.findViewById(R.id.image);
             mUid = (TextView) v.findViewById(R.id.uid);
             mUserName = (TextView) v.findViewById(R.id.userName);
+            mImageUrl = (TextView) v.findViewById(R.id.imageUrl);
 
             mDisplayName.setTypeface(main);
             mUserName.setTypeface(two);
@@ -52,6 +54,8 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
             String uid = mUid.getText().toString();
             Intent i = new Intent(view.getContext(), UserProfile.class);
             i.putExtra("uid", uid);
+            i.putExtra("displayName", mDisplayName.getText().toString());
+            i.putExtra("imageUrl", mImageUrl.getText().toString());
             view.getContext().startActivity(i);
         }
     }
@@ -71,6 +75,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         holder.mDisplayName.setText(users.get(position).getDisplayName());
         holder.mUserName.setText(users.get(position).getUserName());
         holder.mUid.setText(users.get(position).getUid());
+        holder.mImageUrl.setText(users.get(position).getImageUrl());
 
         Picasso.with(holder.mImage.getContext()).load(users.get(position).getImageUrl()).into(holder.mImage);
     }

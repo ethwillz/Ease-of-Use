@@ -23,7 +23,7 @@
         <activity
             android:name=".InitialScreen"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar"/>
         <activity
             android:name=".SignIn"
             android:screenOrientation="portrait"
@@ -50,7 +50,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".UserProfile"></activity>
+        <activity android:name=".UserProfile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"/>
     </application>
 
 </manifest>

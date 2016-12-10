@@ -108,15 +108,21 @@ public class SelectedProduct extends AppCompatActivity {
             }
         });
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         save.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 //Adds listener for the database to get the number of products stored which helps in naming scheme of new product
-
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("saved").child(user.getUid()).child(id).setValue(getIntent().getStringExtra("uid"));
-
-                save.setText(R.string.saved);
+                if(save.getText().toString().equals("Save")){
+                    save.setText("Saved");
+                    mDatabase.child("saved").child(user.getUid()).child(getIntent().getStringExtra("id")).setValue(getIntent().getStringExtra("uid"));
+                }
+                else{
+                    save.setText("Save");
+                    mDatabase.child("saved").child(user.getUid()).child(getIntent().getStringExtra("id")).removeValue();
+                }
+                //Listens for if user wants to unsave item
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

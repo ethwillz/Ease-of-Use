@@ -106,7 +106,7 @@ public class AddUser extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String text = searchUser.getText().toString().toLowerCase();
-                mAdapter.filterProducts(text);
+                mAdapter2.filterProducts(text);
             }
 
             @Override
@@ -131,7 +131,6 @@ public class AddUser extends Fragment {
                     }
                 }
 
-                System.out.println(top.get("Gc5BLOTXhdXcu3fnMUeNZ8G1eyA3"));
                 //Sets adapter to the list of products
                 layout = new GridLayoutManager(v.getContext(), 3);
                 users.setLayoutManager(layout);

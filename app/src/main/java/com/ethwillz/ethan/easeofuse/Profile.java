@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -36,6 +39,9 @@ public class Profile extends Fragment {
     ProductInformation info;
     Button follow;
     DatabaseReference mDatabase;
+    ImageView profilePic;
+    TextView following;
+    TextView followers;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +85,9 @@ public class Profile extends Fragment {
         savedGrid = (RecyclerView) v.findViewById(R.id.savedGrid);
         savedGrid.setLayoutManager(layout);
         savedGrid.setHasFixedSize(true);
+        profilePic = (ImageView) v.findViewById(R.id.profilePic);
+        followers = (TextView) v.findViewById(R.id.followers);
+        following = (TextView) v.findViewById(R.id.following);
 
         populateGrid();
 
@@ -89,6 +98,38 @@ public class Profile extends Fragment {
 
         displayName.setTypeface(two);
         savedTitle.setTypeface(main);
+        followers.setTypeface(main);
+        following.setTypeface(main);
+
+        mDatabase.child("following").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                following.setText("Following " + dataSnapshot.getChildrenCount());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        mDatabase.child("followers").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                followers.setText(dataSnapshot.getChildrenCount() + " followers");
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        mDatabase.child("users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Picasso.with(profilePic.getContext()).load(dataSnapshot.child("imageUrl").getValue().toString()).into(profilePic);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
         if(user != null){
             displayName.setText(user.getDisplayName());

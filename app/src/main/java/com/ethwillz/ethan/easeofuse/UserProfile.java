@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,12 +19,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class UserProfile extends AppCompatActivity {
-    View v;
-    TextView displayName;
+    TextView userDisplayName;
     ArrayList<ProductInformation> items = new ArrayList<>();
     ArrayList<ProductInformation> products = new ArrayList<>();
     FirebaseUser user;
@@ -33,36 +34,47 @@ public class UserProfile extends AppCompatActivity {
     AppBarLayout appBarLayout;
     ProductInformation info;
     String uid;
+    String displayName;
+    String imageUrl;
     DatabaseReference mDatabase;
+    Button follow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.user_other_profile);
 
         uid = getIntent().getStringExtra("uid");
+        displayName = getIntent().getStringExtra("displayName");
+        imageUrl = getIntent().getStringExtra("imageUrl");
+
 
         Database.Product all = new Database.Product();
         products = all.getAllProducts();
-        RecyclerView savedGrid = (RecyclerView) findViewById(R.id.savedGrid);
+        savedGrid = (RecyclerView) findViewById(R.id.productGrid);
         appBarLayout = ((AppBarLayout) findViewById(R.id.appBar));
         user = FirebaseAuth.getInstance().getCurrentUser();
-        layout = new GridLayoutManager(v.getContext(), 2);
-        savedGrid = (RecyclerView) v.findViewById(R.id.savedGrid);
+        layout = new GridLayoutManager(this, 2);
         savedGrid.setLayoutManager(layout);
         savedGrid.setHasFixedSize(true);
+        ImageView profilePic = (ImageView) findViewById(R.id.profilePic);
 
         populateGrid();
 
-        final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
-        final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
-        displayName = (TextView) v.findViewById(R.id.displayName);
-        TextView savedTitle = (TextView) v.findViewById(R.id.savedTitle);
+        final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
+        final Typeface two = Typeface.createFromAsset(getAssets(), "fonts/Taken by Vultures Demo.otf");
+        userDisplayName = (TextView) findViewById(R.id.user_display_name);
+        TextView savedTitle = (TextView) findViewById(R.id.savedTitle);
 
-        displayName.setTypeface(two);
+        Picasso.with(this).load(imageUrl).into(profilePic);
+
+        follow = (Button) findViewById(R.id.follow);
+        follow.setTypeface(main);
+        userDisplayName.setTypeface(two);
         savedTitle.setTypeface(main);
 
         if(user != null){
-            displayName.setText(user.getDisplayName());
+            userDisplayName.setText(user.getDisplayName());
         }
 
         savedGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -81,6 +93,23 @@ public class UserProfile extends AppCompatActivity {
                 }
             }
         });
+
+        //On click of follower button adds this user to logged in user's followers and adds this user to logged in user's following
+        follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(follow.getText().toString().equals("Follow")) {
+                    follow.setText("Following");
+                    mDatabase.child("following").child(user.getUid()).child(uid).setValue(displayName);
+                    mDatabase.child("followers").child(uid).child(user.getUid()).setValue(user.getDisplayName());
+                }
+                else{
+                    follow.setText("Follow");
+                    mDatabase.child("following").child(user.getUid()).child(uid).removeValue();
+                    mDatabase.child("followers").child(uid).child(user.getUid()).removeValue();
+                }
+            }
+        });
     }
 
     public void populateGrid(){
@@ -90,8 +119,8 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot d : dataSnapshot.getChildren()){
-                    if(d.child("user").getValue().toString().equals(uid)){
-                        items.add(getProductInfo(d.child("product").getValue().toString()));
+                    if(d.child("uid").getValue().toString().equals(uid)){
+                        items.add(0, getProductInfo(d.getKey()));
                     }
                 }
                 //Sets adapter to the list of products
@@ -106,12 +135,10 @@ public class UserProfile extends AppCompatActivity {
 
     public ProductInformation getProductInfo(String productID){
         for(int i = 0; i < products.size(); i++){
-            System.out.println(products.get(i).getImageUrl());
             if(products.get(i).getProductID().equals(productID)) {
                 return products.get(i);
             }
         }
         return info;
     }
-
 }

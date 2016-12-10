@@ -92,8 +92,7 @@ public class Database {
 
         public ArrayList<UserInformation> getPopUsers(HashMap<String, Integer> top){
             ArrayList<UserInformation> popular = new ArrayList<>();
-            for(int i = 0; i < users.size(); i++){
-                System.out.println("IMPORTANT---------------------" + users.get(i).getUid());
+            for(int i = 0; i < users.size(); i++){;
                 if(top.containsKey(users.get(i).getUid())){
                     popular.add(users.get(i));
                 }

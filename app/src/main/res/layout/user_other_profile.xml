@@ -10,7 +10,8 @@
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id="@+id/appBar">
+        android:id="@+id/appBar"
+        android:background="#000000">
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
@@ -20,22 +21,45 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax">
-                <TextView
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/displayName"
-                    android:textSize="85dp"
-                    android:textColor="#ffffff"
-                    android:gravity="center_horizontal"
-                    android:layout_marginTop="12dp"/>
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:src="@drawable/logo"
+                        android:layout_height="100dp"
+                        android:id="@+id/profilePic"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="11dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/user_display_name"
+                        android:textSize="50dp"
+                        android:textColor="#ffffff"
+                        android:gravity="center"
+                        android:layout_marginStart="14dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toEndOf="@+id/profilePic" />
+
+                </RelativeLayout>
 
                 <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="125dp"
                     android:layout_height="wrap_content"
+                    android:textSize="25dp"
                     android:text="Follow"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/follow"
                     android:background="@drawable/button_selector"
                     android:textColor="#000000"
-                    android:gravity="center_horizontal"/>
+                    android:clickable="true"
+                    android:layout_marginTop="10dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -43,14 +67,14 @@
                     android:id="@+id/savedTitle"
                     android:textSize="20dp"
                     android:textColor="#ffffff"
-                    android:text="Saved items"
+                    android:text="Products Posted"
                     android:layout_marginTop="10dp"/>
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/savedGrid"
+        android:id="@+id/productGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

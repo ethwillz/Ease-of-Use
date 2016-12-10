@@ -22,45 +22,61 @@
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="250dp"
-                    android:id="@+id/profilePic"/>
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/displayName"
-                    android:textSize="85dp"
-                    android:textColor="#ffffff"
-                    android:gravity="center_horizontal"
-                    android:layout_marginTop="12dp"/>
+                    android:layout_height="match_parent">
 
-                </LinearLayout>
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:src="@drawable/logo"
+                        android:layout_height="100dp"
+                        android:id="@+id/profilePic"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="11dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/displayName"
+                        android:textSize="50dp"
+                        android:textColor="#ffffff"
+                        android:gravity="center"
+                        android:layout_marginStart="14dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toEndOf="@+id/profilePic" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/followers"/>
+                        android:id="@+id/followers"
+                        android:text="Followers"
+                        android:textColor="#ffffff"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="66dp"
+                        android:layout_marginTop="10dp"/>
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/following"/>
+                        android:id="@+id/following"
+                        android:text="Following"
+                        android:textColor="#ffffff"
+                        android:layout_marginEnd="68dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="10dp"/>
 
-                </LinearLayout>
+                </RelativeLayout>
 
                 <TextView
                     android:layout_width="match_parent"
