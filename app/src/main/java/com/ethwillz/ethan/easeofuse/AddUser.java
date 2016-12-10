@@ -145,11 +145,12 @@ public class AddUser extends Fragment {
     }
 
     public class Organize extends AsyncTask<TaskParams, Void, ArrayList<UserInformation>> {
-        ArrayList<UserInformation> sorted;
+        ArrayList<UserInformation> sorted = new ArrayList<>();
         @Override
         protected ArrayList<UserInformation> doInBackground(TaskParams... taskParamses) {
             sorted = popUsers.getPopUsers(taskParamses[0].map);
             sorted = UserSort.mergeSort(taskParamses[0].map, sorted);
+            System.out.println(sorted);
             return sorted;
         }
 

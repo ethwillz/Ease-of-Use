@@ -1,7 +1,12 @@
 package com.ethwillz.ethan.easeofuse;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,8 +18,10 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.formats.NativeAd;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,13 +29,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import static android.R.attr.data;
+import static android.app.Activity.RESULT_OK;
 
 public class Profile extends Fragment {
     View v;
+    TextView following;
+    TextView followers;
     TextView displayName;
+    ImageView profilePic;
     ArrayList<ProductInformation> items = new ArrayList<>();
     ArrayList<ProductInformation> products = new ArrayList<>();
     FirebaseUser user;
@@ -37,11 +54,12 @@ public class Profile extends Fragment {
     GridLayoutManager layout;
     AppBarLayout appBarLayout;
     ProductInformation info;
-    Button follow;
     DatabaseReference mDatabase;
-    ImageView profilePic;
-    TextView following;
-    TextView followers;
+    Uri downloadUrl;
+    String picturePath;
+    UploadTask uploadTask;
+    private final int RESULT_LOAD_IMAGE = 652;
+    private final int RESULT_CROP_IMAGE = 489;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,10 +99,7 @@ public class Profile extends Fragment {
 
         v = getView();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        layout = new GridLayoutManager(v.getContext(), 2);
         savedGrid = (RecyclerView) v.findViewById(R.id.savedGrid);
-        savedGrid.setLayoutManager(layout);
-        savedGrid.setHasFixedSize(true);
         profilePic = (ImageView) v.findViewById(R.id.profilePic);
         followers = (TextView) v.findViewById(R.id.followers);
         following = (TextView) v.findViewById(R.id.following);
@@ -134,7 +149,84 @@ public class Profile extends Fragment {
         if(user != null){
             displayName.setText(user.getDisplayName());
         }
+
+        profilePic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
+                return true;
+            }
+        });
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+
+            case RESULT_LOAD_IMAGE:{
+                //Gets the data for the image
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                //Sets up a cursor which queries for the filepath of the image
+                Cursor cursor = getContext().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                //File path is determined from cursor
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                picturePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                doCrop();
+            }
+
+            case RESULT_CROP_IMAGE: {
+                final Bundle extras = data.getExtras();
+
+                if (extras != null) {
+                    Bitmap photo = extras.getParcelable("data");
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
+                    StorageReference productRef = storageRef.child(user.getUid());
+                    Uri picture = Uri.fromFile(new File(picturePath));
+
+                    //Picture is uploaded from phone using path
+                    uploadTask = productRef.putFile(picture);
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            downloadUrl = taskSnapshot.getDownloadUrl();
+                            pictureSuccess(downloadUrl);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    public void pictureSuccess(Uri downloadUrl) {
+        mDatabase.child("users").child(user.getUid()).child("imageUrl").setValue(downloadUrl);
+    }
+
+    private void doCrop(){
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setClassName("com.android.camera", "com.android.camera.CropImage");
+        File file = new File(picturePath);
+        Uri uri = Uri.fromFile(file);
+        intent.setData(uri);
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", 500);
+        intent.putExtra("outputY", 500);
+        intent.putExtra("noFaceDetection", true);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, RESULT_CROP_IMAGE);
+    }
+
     public void populateGrid(){
         //Gets the saved items for a user
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -145,6 +237,9 @@ public class Profile extends Fragment {
                     items.add(getProductInfo(d.getKey()));
                 }
                 //Sets adapter to the list of products
+                layout = new GridLayoutManager(v.getContext(), 2);
+                savedGrid.setLayoutManager(layout);
+                savedGrid.setHasFixedSize(true);
                 mAdapter = new ProductGridAdapter(items);
                 savedGrid.setAdapter(mAdapter);
             }

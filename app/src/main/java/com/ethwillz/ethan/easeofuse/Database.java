@@ -70,14 +70,10 @@ public class Database {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot d : dataSnapshot.getChildren()){
-                        Iterator<DataSnapshot> userIDs = dataSnapshot.getChildren().iterator();
-                        for(int i = 0; i < d.getChildrenCount(); i++) {
-                            DataSnapshot user = userIDs.next();
-                            String userName = user.child("userName").getValue().toString();
-                            String imageUrl = user.child("imageUrl").getValue().toString();
-                            String displayName = user.child("displayName").getValue().toString();
-                            users.add(new UserInformation(d.getKey(), userName, imageUrl, displayName));
-                        }
+                        String userName = d.child("userName").getValue().toString();
+                        String imageUrl = d.child("imageUrl").getValue().toString();
+                        String displayName = d.child("displayName").getValue().toString();
+                        users.add(new UserInformation(d.getKey(), userName, imageUrl, displayName));
                     }
                 }
                 @Override
@@ -92,6 +88,10 @@ public class Database {
 
         public ArrayList<UserInformation> getPopUsers(HashMap<String, Integer> top){
             ArrayList<UserInformation> popular = new ArrayList<>();
+            for(int i = 0; i < users.size(); i++){
+                System.out.println(users.get(i).getUid());
+            }
+            System.out.println(top);
             for(int i = 0; i < users.size(); i++){;
                 if(top.containsKey(users.get(i).getUid())){
                     popular.add(users.get(i));

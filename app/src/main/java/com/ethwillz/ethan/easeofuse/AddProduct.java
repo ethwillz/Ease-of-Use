@@ -38,8 +38,9 @@ public class AddProduct extends AppCompatActivity {
     private int RESULT_LOAD_IMAGE = 652;
     long numItems;
     Uri downloadUrl;
-    String picturePath;
     UploadTask uploadTask;
+    String picturePath;
+
     DatabaseReference mDatabase;
     String style;
 
@@ -96,9 +97,6 @@ public class AddProduct extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-
-            //Toast lets add_user know the photo has been succesfully found
-            Toast.makeText(this, "Picture added successfully", Toast.LENGTH_LONG).show();
         }
     }
 
