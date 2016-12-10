@@ -19,6 +19,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     UserFilter filter;
 
     public UserAdapter(ArrayList<UserInformation> people){
+        filter = new UserFilter(users, this);
         users = people;
     }
 
@@ -87,7 +88,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     //Filters products based on a query
     public void filterProducts(String query){
-        filter = new UserFilter(users, this);
         filter.filter(query);
     }
 }

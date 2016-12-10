@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.ethwillz.ethan.easeofuse.AddUser"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#000000">
 
@@ -33,7 +34,8 @@
                 android:id="@+id/searchUser"
                 android:textColorHint="#B2B6B8"
                 android:textColor="#ffffff"
-                android:layout_marginTop="25dp"/>
+                android:layout_marginTop="25dp"
+                android:theme="@style/EditTextTheme"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -44,5 +46,17 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        android:visibility="visible"
+        android:layout_gravity="bottom">
+    </com.google.android.gms.ads.AdView>
 
 </android.support.design.widget.CoordinatorLayout>

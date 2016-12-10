@@ -64,7 +64,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
     public UserGridAdapter.UserViewHolder onCreateViewHolder(ViewGroup parent,
                                                                    int viewType) {
         View v = (View)LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.user_cards, parent, false);
+                .inflate(R.layout.user_hottest_cards, parent, false);
 
         return new UserViewHolder(v);
     }

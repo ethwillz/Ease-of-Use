@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,7 +43,6 @@ public class AddProduct extends AppCompatActivity {
     String picturePath;
 
     DatabaseReference mDatabase;
-    String style;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +50,29 @@ public class AddProduct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_product);
 
-        final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Barrio Santo.ttf");
+        final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
+        TextView nameText = (TextView) findViewById(R.id.nameText);
+        TextView linkText = (TextView) findViewById(R.id.linkText);
+        TextView priceText = (TextView) findViewById(R.id.priceText);
+        TextView descriptionText = (TextView) findViewById(R.id.descriptionText);
+        TextView recommendationText = (TextView) findViewById(R.id.recommendationText);
+        EditText nameBox = (EditText) findViewById(R.id.nameBox);
+        EditText linkBox = (EditText) findViewById(R.id.linkBox);
+        EditText descriptionBox = (EditText) findViewById(R.id.priceBox);
+        EditText recommendationBox = (EditText) findViewById(R.id.recommendationBox);
         Button enter = (Button) findViewById(R.id.enter);
-        enter.setTypeface(main);
         Button upload = (Button) findViewById(R.id.upload);
+        nameText.setTypeface(main);
+        linkText.setTypeface(main);
+        priceText.setTypeface(main);
+        descriptionText.setTypeface(main);
+        recommendationText.setTypeface(main);
+        nameBox.setTypeface(main);
+        linkBox.setTypeface(main);
+        descriptionBox.setTypeface(main);
+        recommendationBox.setTypeface(main);
+        enter.setTypeface(main);
         upload.setTypeface(main);
-
-        Spinner spinner = (Spinner) findViewById(R.id.types);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.types, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
         //Adds listener for the database to get the number of products stored which helps in naming scheme of new product
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -135,27 +148,16 @@ public class AddProduct extends AppCompatActivity {
         EditText description = (EditText) findViewById(R.id.descriptionBox);
         EditText recommendation = (EditText) findViewById(R.id.recommendationBox);
 
-        RadioButton street = (RadioButton) findViewById(R.id.street);
-        RadioButton dress = (RadioButton) findViewById(R.id.classy);
-        if (street.isChecked())
-            style = "street";
-        else
-            style = "class";
-
-        Spinner spinner = (Spinner) findViewById(R.id.types);
-        String type = spinner.getSelectedItem().toString();
-
         //Creates map of all information and then adds it to the database
         Map<String, String> newProduct = new HashMap<>();
-        newProduct.put("add_user", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        newProduct.put("user", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         newProduct.put("name", name.getText().toString());
         newProduct.put("downloadUrl", downloadUrl.toString());
         newProduct.put("link", link.getText().toString());
         newProduct.put("description", description.getText().toString());
         newProduct.put("price", price.getText().toString());
         newProduct.put("recommendation", recommendation.getText().toString());
-        newProduct.put("style", style);
-        newProduct.put("type", type);
+        newProduct.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
         mDatabase.child("products").child(numItems + "").setValue(newProduct);
 
         //Returns to products_hot activity after new product entered into database

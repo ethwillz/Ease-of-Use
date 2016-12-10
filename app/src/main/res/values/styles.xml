@@ -48,4 +48,10 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">#ffffff</item>
+        <item name="colorControlActivated">#ffffff</item>
+        <item name="colorControlHighlight">#666970</item>
+    </style>
+
 </resources>

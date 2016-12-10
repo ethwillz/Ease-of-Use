@@ -85,16 +85,9 @@ public class SelectedProduct extends AppCompatActivity {
                 for(int i = 0; i < dataSnapshot.getChildrenCount(); i++){
                     if(savedIDs.next().getKey().equals(id)){
                         save.setText("Saved");
-                        save.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        });
                     }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -122,13 +115,6 @@ public class SelectedProduct extends AppCompatActivity {
                     save.setText("Save");
                     mDatabase.child("saved").child(user.getUid()).child(getIntent().getStringExtra("id")).removeValue();
                 }
-                //Listens for if user wants to unsave item
-                save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
             }
         });
     }

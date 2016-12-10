@@ -25,8 +25,7 @@ public class ProductFilter extends Filter {
         final FilterResults results = new FilterResults();
 
         for(final ProductInformation item : productList){
-            if(item.getTitle().toLowerCase().contains(constraint) || item.getStyle().toLowerCase().contains(constraint) ||
-            item.getType().toLowerCase().contains(constraint) || item.getDescription().toLowerCase().contains(constraint)){
+            if(item.getTitle().toLowerCase().contains(constraint) || item.getDescription().toLowerCase().contains(constraint)){
                 filteredProductList.add(item);
             }
         }

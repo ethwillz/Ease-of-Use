@@ -36,6 +36,8 @@ public class Search extends Fragment {
     ArrayList<ProductInformation> items = new ArrayList<>();
     View v;
     EditText search;
+    ArrayList<String> following = new ArrayList<>();
+    FirebaseUser user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +62,7 @@ public class Search extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         v = getView();
 
+        user= FirebaseAuth.getInstance().getCurrentUser();
         final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
         search.setTypeface(main);
 
@@ -71,51 +74,52 @@ public class Search extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        MobileAds.initialize(v.getContext(), "ca-app-pub-5566797500264030~3966962306");
-        final AdView mAdView = (AdView) v.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1BF89AB15C45335B1CA8BCE94927DA8C").build();
-        mAdView.loadAd(adRequest);
-
         //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.addValueEventListener(new ValueEventListener() {
+
+        following.add(user.getUid());
+        mDatabase.child("following").child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                //Checks if add_user is authorized to control visibility of add button and banner ad
-                if(user != null) {
-                    String uid = user.getUid();
-                    if (dataSnapshot.child("users").child(uid).child("authorized").getValue().toString().equals("1")) {
-                        ImageButton add = (ImageButton) v.findViewById(R.id.add_button);
-                        add.setVisibility(View.VISIBLE);
-                        mAdView.setVisibility(View.INVISIBLE);
-                    }
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    following.add(d.getKey());
                 }
-
-                //Adds relevant information about each product to a List
-                for (long i = dataSnapshot.child("products").getChildrenCount()-1; i >= 0; i--) {
-                    String url = dataSnapshot.child("products").child(i + "").child("downloadUrl").getValue().toString();
-                    String title = dataSnapshot.child("products").child(i + "").child("name").getValue().toString();
-                    String description = dataSnapshot.child("products").child(i + "").child("description").getValue().toString();
-                    String link = dataSnapshot.child("products").child(i+"").child("link").getValue().toString();
-                    String price = dataSnapshot.child("products").child(i+"").child("price").getValue().toString();
-                    String recommendation = dataSnapshot.child("products").child(i+"").child("recommendation").getValue().toString();
-                    String type = dataSnapshot.child("products").child(i+"").child("type").getValue().toString();
-                    String style = dataSnapshot.child("products").child(i+"").child("style").getValue().toString();
-                    String poster = dataSnapshot.child("products").child(i+"").child("user").getValue().toString();
-                    String uid = dataSnapshot.child("products").child(i+"").child("uid").getValue().toString();
-                    String id = i + "";
-                    ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id, uid);
-                    items.add(item);
-                }
-                //Sets adapter to the list of products
-                mAdapter = new ProductAdapter(items);
-                mRecyclerView.setAdapter(mAdapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
+        });
+
+        mDatabase.child("products").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //Adds relevant information about each product to a List
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    if (following.contains(d.child("uid").getValue().toString())) {
+                        String url = d.child("downloadUrl").getValue().toString();
+                        String title = d.child("name").getValue().toString();
+                        String description = d.child("description").getValue().toString();
+                        String link = d.child("link").getValue().toString();
+                        String price = d.child("price").getValue().toString();
+                        String recommendation = d.child("recommendation").getValue().toString();
+                        String poster = d.child("user").getValue().toString();
+                        String uid = d.child("uid").getValue().toString();
+                        String id = d.getKey();
+                        ProductInformation item = new ProductInformation(url, title, description, link, price, recommendation, poster, id, uid);
+                        items.add(0, item);
+                    }
+                    //Sets adapter to the list of products
+                    mAdapter = new ProductAdapter(items);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
         });
 
         search.addTextChangedListener(new TextWatcher(){

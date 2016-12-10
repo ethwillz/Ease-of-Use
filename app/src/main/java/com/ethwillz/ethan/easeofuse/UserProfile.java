@@ -72,10 +72,7 @@ public class UserProfile extends AppCompatActivity {
         follow.setTypeface(main);
         userDisplayName.setTypeface(two);
         savedTitle.setTypeface(main);
-
-        if(user != null){
-            userDisplayName.setText(user.getDisplayName());
-        }
+        userDisplayName.setText(displayName);
 
         savedGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int scrollDy = 0;
@@ -91,6 +88,20 @@ public class UserProfile extends AppCompatActivity {
                 {
                     appBarLayout.setExpanded(true);
                 }
+            }
+        });
+
+        mDatabase.child("following").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    if(d.getKey().equals(uid)){
+                        follow.setText("Following");
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
 

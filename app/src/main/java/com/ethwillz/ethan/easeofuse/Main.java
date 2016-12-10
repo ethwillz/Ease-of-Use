@@ -38,14 +38,6 @@ public class Main extends Fragment{
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.products_hot, container, false);
-        ImageButton add = (ImageButton) view.findViewById(R.id.add_button);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), AddProduct.class);
-                startActivity(i);
-            }
-        });
 
         return view;
     }

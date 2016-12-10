@@ -18,21 +18,6 @@
         android:layout_height="match_parent"
         />
 
-    <!--Add product button which is only visible to authorized users-->
-    <ImageButton
-        android:id="@+id/add_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_add_black_24dp"
-        android:background="@drawable/ic_back"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/adView"
-        android:onClick="onAddClick"
-        android:visibility="invisible"/>
-
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"

@@ -17,6 +17,9 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -83,6 +86,11 @@ public class AddUser extends Fragment {
         final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
         title.setTypeface(main);
         searchUser.setTypeface(main);
+
+        MobileAds.initialize(v.getContext(), "ca-app-pub-5566797500264030~3966962306");
+        final AdView mAdView = (AdView) v.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("1BF89AB15C45335B1CA8BCE94927DA8C").build();
+        mAdView.loadAd(adRequest);
 
         populateGrid();
 

@@ -2,6 +2,7 @@ package com.ethwillz.ethan.easeofuse;
 
 import android.provider.ContactsContract;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,12 +30,10 @@ public class Database {
                         String link = d.child("link").getValue().toString();
                         String price = d.child("price").getValue().toString();
                         String recommendation = d.child("recommendation").getValue().toString();
-                        String type = d.child("type").getValue().toString();
-                        String style = d.child("style").getValue().toString();
                         String poster = d.child("user").getValue().toString();
                         String uid = d.child("uid").getValue().toString();
                         String id = d.getKey();
-                        ProductInformation info = new ProductInformation(url, title, description, link, price, recommendation, type, style, poster, id, uid);
+                        ProductInformation info = new ProductInformation(url, title, description, link, price, recommendation, poster, id, uid);
                         items.add(info);
                     }
                 }
@@ -60,40 +59,41 @@ public class Database {
         }
     }
 
-    static class User{
+    static class User {
         private ArrayList<UserInformation> users = new ArrayList<>();
         DatabaseReference mDatabase;
 
-        public User(){
+        public User() {
             mDatabase = FirebaseDatabase.getInstance().getReference();
             mDatabase.child("users").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot d : dataSnapshot.getChildren()){
+                    for (DataSnapshot d : dataSnapshot.getChildren()) {
                         String userName = d.child("userName").getValue().toString();
                         String imageUrl = d.child("imageUrl").getValue().toString();
                         String displayName = d.child("displayName").getValue().toString();
                         users.add(new UserInformation(d.getKey(), userName, imageUrl, displayName));
                     }
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
         }
 
-        public ArrayList<UserInformation> getAllUsers(){
+        public ArrayList<UserInformation> getAllUsers() {
             return users;
         }
 
-        public ArrayList<UserInformation> getPopUsers(HashMap<String, Integer> top){
+        public ArrayList<UserInformation> getPopUsers(HashMap<String, Integer> top) {
             ArrayList<UserInformation> popular = new ArrayList<>();
-            for(int i = 0; i < users.size(); i++){
-                System.out.println(users.get(i).getUid());
+            for (int i = 0; i < users.size(); i++) {
             }
             System.out.println(top);
-            for(int i = 0; i < users.size(); i++){;
-                if(top.containsKey(users.get(i).getUid())){
+            for (int i = 0; i < users.size(); i++) {
+                ;
+                if (top.containsKey(users.get(i).getUid())) {
                     popular.add(users.get(i));
                 }
             }

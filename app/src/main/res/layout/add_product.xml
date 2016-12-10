@@ -26,13 +26,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Name:"
             android:id="@+id/nameText"
-            android:textCursorDrawable="@null"/>
+            android:textColor="#ffffff"/>
 
         <!--Prompt for name of new product-->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/nameBox" />
+            android:id="@+id/nameBox"
+            android:textColor="#ffffff"
+            android:theme="@style/EditTextTheme"/>
 
         <!--Link of new product label-->
         <TextView
@@ -40,13 +42,16 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Link:"
-            android:id="@+id/linktext" />
+            android:id="@+id/linkText"
+            android:textColor="#ffffff"/>
 
         <!--Prompt for link of new product-->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/linkBox" />
+            android:id="@+id/linkBox"
+            android:textColor="#ffffff"
+            android:theme="@style/EditTextTheme"/>
 
         <!--Button which will open gallery to choose photo of new product-->
         <Button
@@ -73,13 +78,16 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Price:"
-            android:id="@+id/priceText" />
+            android:id="@+id/priceText"
+            android:textColor="#ffffff"/>
 
         <!--Prompt for price of new product-->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/priceBox" />
+            android:id="@+id/priceBox"
+            android:textColor="#ffffff"
+            android:theme="@style/EditTextTheme"/>
 
         <!--Label for description of new item-->
         <TextView
@@ -87,7 +95,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Description:"
-            android:id="@+id/descriptionText"/>
+            android:id="@+id/descriptionText"
+            android:textColor="#ffffff"/>
 
         <!--Prompt for description of new product-->
         <EditText
@@ -95,7 +104,9 @@
             android:layout_height="200dp"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:id="@+id/descriptionBox" />
+            android:id="@+id/descriptionBox"
+            android:textColor="#ffffff"
+            android:theme="@style/EditTextTheme"/>
 
         <!--Label for recommendation of new product-->
         <TextView
@@ -103,7 +114,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Recommendation:"
-            android:id="@+id/recommendationText" />
+            android:id="@+id/recommendationText"
+            android:textColor="#ffffff"/>
 
         <!--Prompt for recommendation of new product-->
         <EditText
@@ -111,39 +123,9 @@
             android:layout_height="200dp"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:id="@+id/recommendationBox" />
-
-        <!--Radiogroup for radio buttons which toggle between street or classy styles-->
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Street"
-                android:id="@+id/street"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Class"
-                android:id="@+id/classy"
-                android:layout_marginTop="26dp"
-                android:layout_gravity="center"/>
-
-        </RadioGroup>
-
-        <!--Spinner which displays all possible product types-->
-        <Spinner
-            android:layout_width="200dp"
-            android:layout_height="45dp"
-            android:id="@+id/types"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center" />
+            android:id="@+id/recommendationBox"
+            android:textColor="#ffffff"
+            android:theme="@style/EditTextTheme"/>
 
         <!--Saves new item in database and adds it to the list in the products_hot view-->
         <Button

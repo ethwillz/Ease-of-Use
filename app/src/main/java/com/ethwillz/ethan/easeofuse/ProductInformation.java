@@ -10,21 +10,17 @@ public class ProductInformation {
     private String link;
     private String price;
     private String recommendation;
-    private String type;
-    private String style;
     private String user;
     private String productID;
     private String uid;
 
-    public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation, String type, String style, String user, String productID, String guid){
+    public ProductInformation(String imageUrl, String title, String description, String link, String price, String recommendation, String user, String productID, String uid){
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
         this.link = link;
         this.price = price;
         this.recommendation = recommendation;
-        this.type = type;
-        this.style = style;
         this.user = user;
         this.productID = productID;
         this.uid = uid;
@@ -47,12 +43,6 @@ public class ProductInformation {
 
     public String getRecommendation(){ return recommendation; }
     public void setRecommendation(String recommendation) { this.recommendation = recommendation; }
-
-    public String getStyle(){ return style; }
-    public void setStyle(String style) { this.style = style; }
-
-    public String getType(){ return type; }
-    public void setType(String type) { this.type = type; }
 
     public String getUser(){ return user; }
     public void setUser(String user) { this.user = user; }

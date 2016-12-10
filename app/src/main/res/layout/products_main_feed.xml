@@ -29,7 +29,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Search items"
                     android:textColorHint="#B2B6B8"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff"
+                    android:theme="@style/EditTextTheme"/>
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -43,30 +44,22 @@
         />
 
     <!--Add product button which is only visible to authorized users-->
-    <ImageButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        app:fabSize="normal"
         android:layout_gravity="end|bottom"
         android:src="@drawable/ic_add_black_24dp"
-        android:background="@drawable/ic_back"
+        android:background="#ffffff"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/adView"
         android:onClick="onAddClick"
-        android:visibility="invisible" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id"
-        android:visibility="visible"
-        android:layout_gravity="bottom">
-    </com.google.android.gms.ads.AdView>
+        app:rippleColor="#cbced3"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        app:backgroundTint="#ffffff"/>
 
 </android.support.design.widget.CoordinatorLayout>

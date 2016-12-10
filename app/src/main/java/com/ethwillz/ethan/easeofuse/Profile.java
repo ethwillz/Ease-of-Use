@@ -154,6 +154,13 @@ public class Profile extends Fragment {
             @Override
             public boolean onLongClick(View view) {
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                i.putExtra("crop", "true");
+                i.putExtra("aspectX", 1);
+                i.putExtra("aspectY", 1);
+                i.putExtra("outputX", 500);
+                i.putExtra("outputY", 500);
+                i.putExtra("noFaceDetection", true);
+                i.putExtra("return-data", true);
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
                 return true;
             }
@@ -179,52 +186,26 @@ public class Profile extends Fragment {
                 picturePath = cursor.getString(columnIndex);
                 cursor.close();
 
-                doCrop();
-            }
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com/ProfilePics/");
+                StorageReference productRef = storageRef.child(user.getUid());
+                Uri picture = Uri.fromFile(new File(picturePath));
 
-            case RESULT_CROP_IMAGE: {
-                final Bundle extras = data.getExtras();
-
-                if (extras != null) {
-                    Bitmap photo = extras.getParcelable("data");
-
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
-                    StorageReference productRef = storageRef.child(user.getUid());
-                    Uri picture = Uri.fromFile(new File(picturePath));
-
-                    //Picture is uploaded from phone using path
-                    uploadTask = productRef.putFile(picture);
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            downloadUrl = taskSnapshot.getDownloadUrl();
-                            pictureSuccess(downloadUrl);
-                        }
-                    });
-                }
+                //Picture is uploaded from phone using path
+                uploadTask = productRef.putFile(picture);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        downloadUrl = taskSnapshot.getDownloadUrl();
+                        pictureSuccess(downloadUrl);
+                    }
+                });
             }
         }
     }
 
     public void pictureSuccess(Uri downloadUrl) {
         mDatabase.child("users").child(user.getUid()).child("imageUrl").setValue(downloadUrl);
-    }
-
-    private void doCrop(){
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setClassName("com.android.camera", "com.android.camera.CropImage");
-        File file = new File(picturePath);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 500);
-        intent.putExtra("outputY", 500);
-        intent.putExtra("noFaceDetection", true);
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, RESULT_CROP_IMAGE);
     }
 
     public void populateGrid(){
