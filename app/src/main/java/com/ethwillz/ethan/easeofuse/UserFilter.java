@@ -19,9 +19,9 @@ public class UserFilter extends Filter{
 
     //Performs filtering with one constraint
     @Override
-    protected Filter.FilterResults performFiltering(CharSequence constraint){
+    protected FilterResults performFiltering(CharSequence constraint){
         filteredUserList.clear();
-        final Filter.FilterResults results = new Filter.FilterResults();
+        final FilterResults results = new Filter.FilterResults();
 
         for(final UserInformation user : users){
             if(user.getUserName().toLowerCase().contains(constraint) || user.getDisplayName().toLowerCase().contains(constraint)){

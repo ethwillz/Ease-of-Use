@@ -123,10 +123,8 @@ public class Search extends Fragment {
         });
 
         search.addTextChangedListener(new TextWatcher(){
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -137,7 +135,6 @@ public class Search extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
     }

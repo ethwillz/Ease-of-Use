@@ -19,8 +19,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     UserFilter filter;
 
     public UserAdapter(ArrayList<UserInformation> people){
-        filter = new UserFilter(users, this);
         users = people;
+        filter = new UserFilter(users, this);
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -83,7 +83,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     //Sets visible list to a new list
     public void setList(List<UserInformation> list){
-        users = list;
+        this.users = list;
     }
 
     //Filters products based on a query

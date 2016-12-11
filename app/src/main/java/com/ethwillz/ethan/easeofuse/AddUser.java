@@ -45,6 +45,7 @@ public class AddUser extends Fragment {
     GridLayoutManager layout;
     LinearLayoutManager mLayoutManager;
     Database.User popUsers = new Database.User();
+    int set;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,6 +84,7 @@ public class AddUser extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         v = getView();
+        set=0;
         final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
         title.setTypeface(main);
         searchUser.setTypeface(main);
@@ -97,11 +99,14 @@ public class AddUser extends Fragment {
         searchUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                users.setLayoutManager(mLayoutManager);
-                users.setHasFixedSize(true);
-                mAdapter2 = new UserAdapter(popUsers.getAllUsers());
-                users.setAdapter(mAdapter2);
+                if(set == 0) {
+                    mLayoutManager = new LinearLayoutManager(getActivity());
+                    users.setLayoutManager(mLayoutManager);
+                    users.setHasFixedSize(true);
+                    mAdapter2 = new UserAdapter(popUsers.getAllUsers());
+                    users.setAdapter(mAdapter2);
+                    set=1;
+                }
             }
         });
 

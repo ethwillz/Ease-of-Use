@@ -2,10 +2,10 @@ package com.ethwillz.ethan.easeofuse;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -15,12 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.ads.formats.NativeAd;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,9 +35,9 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import static android.R.attr.data;
 import static android.app.Activity.RESULT_OK;
 
 public class Profile extends Fragment {
@@ -60,6 +60,8 @@ public class Profile extends Fragment {
     UploadTask uploadTask;
     private final int RESULT_LOAD_IMAGE = 652;
     private final int RESULT_CROP_IMAGE = 489;
+    File tempFile;
+    Uri tempUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +88,50 @@ public class Profile extends Fragment {
             }
         });
 
+        profilePic = (ImageView) view.findViewById(R.id.profilePic);
+        profilePic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                /*
+                i.putExtra("crop", "true");
+                i.putExtra("aspectX", 1);
+                i.putExtra("aspectY", 1);
+                i.putExtra("outputX", 1000);
+                i.putExtra("outputY", 1000);
+                i.putExtra("noFaceDetection", true);
+                i.putExtra("return-data", true);
+                */
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
+                return true;
+            }
+        });
+
+        displayName = (TextView) view.findViewById(R.id.displayName);
+        displayName.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                mAuth.signOut();
+
+                /*
+                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
+                GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                        .build();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                */
+
+                getActivity().finishAffinity();
+
+                return true;
+            }
+        });
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -100,7 +146,6 @@ public class Profile extends Fragment {
         v = getView();
         user = FirebaseAuth.getInstance().getCurrentUser();
         savedGrid = (RecyclerView) v.findViewById(R.id.savedGrid);
-        profilePic = (ImageView) v.findViewById(R.id.profilePic);
         followers = (TextView) v.findViewById(R.id.followers);
         following = (TextView) v.findViewById(R.id.following);
 
@@ -108,7 +153,6 @@ public class Profile extends Fragment {
 
         final Typeface main = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Walkway Bold.ttf");
         final Typeface two = Typeface.createFromAsset(v.getContext().getAssets(), "fonts/Taken by Vultures Demo.otf");
-        displayName = (TextView) v.findViewById(R.id.displayName);
         TextView savedTitle = (TextView) v.findViewById(R.id.savedTitle);
 
         displayName.setTypeface(two);
@@ -149,63 +193,62 @@ public class Profile extends Fragment {
         if(user != null){
             displayName.setText(user.getDisplayName());
         }
-
-        profilePic.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                i.putExtra("crop", "true");
-                i.putExtra("aspectX", 1);
-                i.putExtra("aspectY", 1);
-                i.putExtra("outputX", 500);
-                i.putExtra("outputY", 500);
-                i.putExtra("noFaceDetection", true);
-                i.putExtra("return-data", true);
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-                return true;
-            }
-        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
+        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            //Gets the data for the image
+            Uri selectedImage = data.getData();
 
-            case RESULT_LOAD_IMAGE:{
-                //Gets the data for the image
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Intent intent = new Intent("com.android.camera.action.CROP");
+            intent.setData(selectedImage);
+            intent.putExtra("outputX", 1000);
+            intent.putExtra("outputY", 1000);
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+            intent.putExtra("scale", true);
+            intent.putExtra("noFaceDetection", true);
+            startActivityForResult(intent, RESULT_CROP_IMAGE);
+        }
+        else{
+            Uri selected = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                //Sets up a cursor which queries for the filepath of the image
-                Cursor cursor = getContext().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                cursor.moveToFirst();
+            //Sets up a cursor which queries for the filepath of the image
+            Cursor cursor = getContext().getContentResolver().query(selected, filePathColumn, null, null, null);
+            cursor.moveToFirst();
 
-                //File path is determined from cursor
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                picturePath = cursor.getString(columnIndex);
-                cursor.close();
+            //File path is determined from cursor
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String path = cursor.getString(columnIndex);
+            cursor.close();
 
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com/ProfilePics/");
-                StorageReference productRef = storageRef.child(user.getUid());
-                Uri picture = Uri.fromFile(new File(picturePath));
+            //child is the name in the storage of the image and storage references are set up
+            String child = user.getUid() + ".png";
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com/ProfilePics");
+            StorageReference productRef = storageRef.child(child);
+            Uri picture = Uri.fromFile(new File(path));
 
-                //Picture is uploaded from phone using path
-                uploadTask = productRef.putFile(picture);
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        downloadUrl = taskSnapshot.getDownloadUrl();
-                        pictureSuccess(downloadUrl);
-                    }
-                });
-            }
+            //Picture is uploaded from phone using path
+            uploadTask = productRef.putFile(picture);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    downloadUrl = taskSnapshot.getDownloadUrl();
+                    System.out.println(downloadUrl);
+                    pictureSuccess(downloadUrl);
+                }
+            });
         }
     }
 
-    public void pictureSuccess(Uri downloadUrl) {
-        mDatabase.child("users").child(user.getUid()).child("imageUrl").setValue(downloadUrl);
+    public void pictureSuccess(Uri downloadUrl){
+        System.out.println("---------------------------");
+        mDatabase.child("users").child(user.getUid()).child("imageUrl").setValue(downloadUrl.toString());
+        System.out.println("In database");
     }
 
     public void populateGrid(){

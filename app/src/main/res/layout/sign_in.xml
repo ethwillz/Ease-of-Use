@@ -41,14 +41,6 @@
             tools:text="Firebase User ID: 123456789abc"
             android:textColor="#ffffff"/>
 
-        <TextView
-            android:id="@+id/directions"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            tools:text="Click back to browse"
-            android:textColor="#ffffff"
-            android:visibility="visible" />
-
     </LinearLayout>
 
 
@@ -99,6 +91,17 @@
                 android:theme="@style/ThemeOverlay.MyDarkButton"
                 tools:visibility="visible" />
         </LinearLayout>
+
+        <EditText
+            android:theme="@style/EditTextTheme"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="username"
+            android:textColorHint="#B2B6B8"
+            android:id="@+id/userName"
+            android:layout_below="@+id/sign_out_and_disconnect"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffff"/>
 
     </RelativeLayout>
 

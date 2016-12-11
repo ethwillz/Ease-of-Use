@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,12 +69,10 @@ public class SignIn extends AppCompatActivity implements
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
-        TextView directions = (TextView) findViewById(R.id.directions);
 
         main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
         mStatusTextView.setTypeface(main);
         mDetailTextView.setTypeface(main);
-        directions.setTypeface(main);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -208,8 +209,8 @@ public class SignIn extends AppCompatActivity implements
             mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.userName).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-            findViewById(R.id.directions).setVisibility(View.VISIBLE);
             //Button out = (Button) findViewById(R.id.sign_out_button);
             Button disconnect = (Button) findViewById(R.id.disconnect_button);
             //out.setTypeface(products_hot);
@@ -242,10 +243,14 @@ public class SignIn extends AppCompatActivity implements
         if(user != null){
             String uid = user.getUid();
             Map<String, String> newUser = new HashMap<>();
-            newUser.put("authorized", "0");
+            EditText username = (EditText) findViewById(R.id.userName);
+            newUser.put("userName", username.getText().toString());
+            newUser.put("displayName", user.getDisplayName());
             newUser.put("email", user.getEmail());
-            newUser.put("profilePic", user.getPhotoUrl().toString());
+            newUser.put("imageUrl", "https://firebasestorage.googleapis.com/v0/b/ease-of-use-9fa8a.appspot.com/o/ProfilePics%2Flogo.png?alt=media&token=ebef6631-0b47-4857-a581-41644b5faed6");
             mDatabase.child("users").child(uid).setValue(newUser);
+            mDatabase.child("following").child(user.getUid()).child("Gc5BLOTXhdXcu3fnMUeNZ8G1eyA3").setValue("Ethan Williams");
+            mDatabase.child("followers").child("Gc5BLOTXhdXcu3fnMUeNZ8G1eyA3").child(user.getUid()).setValue(user.getDisplayName());
         }
     }
 
@@ -260,8 +265,16 @@ public class SignIn extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
-                signIn();
-                break;
+                EditText username = (EditText) findViewById(R.id.userName);
+                if(!username.getText().toString().equals("")) {
+                    signIn();
+                    break;
+                }
+                else {
+                    //CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.main_layout);
+                    //Snackbar snackbar = Snackbar.make(layout, "Please enter username", Snackbar.LENGTH_LONG);
+                    //snackbar.show();
+                }
             /*
             case R.id.sign_out_button:
                 signOut();
