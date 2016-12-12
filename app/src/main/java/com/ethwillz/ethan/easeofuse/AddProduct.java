@@ -91,6 +91,8 @@ public class AddProduct extends AppCompatActivity {
     //Opens up users gallery
     public void addPic(View view){
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivityForResult(i, RESULT_LOAD_IMAGE);
     }
 
@@ -100,6 +102,8 @@ public class AddProduct extends AppCompatActivity {
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data){
             //Gets the data for the image
             Uri selectedImage = data.getData();
+            this.grantUriPermission("com.android.camera",selectedImage,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
             //Sets up a cursor which queries for the filepath of the image
@@ -128,6 +132,8 @@ public class AddProduct extends AppCompatActivity {
         StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
         StorageReference productRef = storageRef.child(child);
         Uri picture = Uri.fromFile(new File(picturePath));
+        this.grantUriPermission("com.android.camera",picture,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         //Picture is uploaded from phone using path
         uploadTask = productRef.putFile(picture);

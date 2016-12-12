@@ -93,6 +93,8 @@ public class Profile extends Fragment {
             @Override
             public boolean onLongClick(View view) {
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 /*
                 i.putExtra("crop", "true");
                 i.putExtra("aspectX", 1);
@@ -208,6 +210,8 @@ public class Profile extends Fragment {
                 e.printStackTrace();
             }
             tempUri = Uri.fromFile(tempFile);
+            this.getContext().grantUriPermission("com.android.camera",tempUri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Intent intent = new Intent("com.android.camera.action.CROP");
             intent.setData(selectedImage);
             intent.putExtra("outputX", 1000);
@@ -218,6 +222,8 @@ public class Profile extends Fragment {
             intent.putExtra("noFaceDetection", true);
             intent.putExtra("output", tempUri);
             intent.putExtra("outputFormat", "PNG");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             //intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
             startActivityForResult(intent, RESULT_CROP_IMAGE);
         }

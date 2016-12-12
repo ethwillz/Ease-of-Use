@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.ethwillz.ethan.easeofuse"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode 6
         versionName "1.2.0"
     }
