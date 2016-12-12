@@ -202,6 +202,12 @@ public class Profile extends Fragment {
             //Gets the data for the image
             Uri selectedImage = data.getData();
 
+            try {
+                tempFile = File.createTempFile("crop", "png", Environment.getExternalStorageDirectory());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            tempUri = Uri.fromFile(tempFile);
             Intent intent = new Intent("com.android.camera.action.CROP");
             intent.setData(selectedImage);
             intent.putExtra("outputX", 1000);
@@ -210,9 +216,13 @@ public class Profile extends Fragment {
             intent.putExtra("aspectY", 1);
             intent.putExtra("scale", true);
             intent.putExtra("noFaceDetection", true);
+            intent.putExtra("output", tempUri);
+            intent.putExtra("outputFormat", "PNG");
+            //intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
             startActivityForResult(intent, RESULT_CROP_IMAGE);
         }
-        else{
+        if(requestCode == RESULT_CROP_IMAGE && resultCode == RESULT_OK && null != data){
+            /*
             Uri selected = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
@@ -224,16 +234,17 @@ public class Profile extends Fragment {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String path = cursor.getString(columnIndex);
             cursor.close();
+            */
 
             //child is the name in the storage of the image and storage references are set up
             String child = user.getUid() + ".png";
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com/ProfilePics");
             StorageReference productRef = storageRef.child(child);
-            Uri picture = Uri.fromFile(new File(path));
+            //Uri picture = Uri.fromFile(new File(path));
 
             //Picture is uploaded from phone using path
-            uploadTask = productRef.putFile(picture);
+            uploadTask = productRef.putFile(tempUri);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -249,6 +260,7 @@ public class Profile extends Fragment {
         System.out.println("---------------------------");
         mDatabase.child("users").child(user.getUid()).child("imageUrl").setValue(downloadUrl.toString());
         System.out.println("In database");
+        tempFile.delete();
     }
 
     public void populateGrid(){
