@@ -1,13 +1,16 @@
 package com.ethwillz.ethan.easeofuse;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +21,6 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,6 +62,11 @@ public class Profile extends Fragment {
     private final int RESULT_CROP_IMAGE = 489;
     File tempFile;
     Uri tempUri;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,18 +97,11 @@ public class Profile extends Fragment {
         profilePic.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+
+                verifyStoragePermissions(getActivity());
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                /*
-                i.putExtra("crop", "true");
-                i.putExtra("aspectX", 1);
-                i.putExtra("aspectY", 1);
-                i.putExtra("outputX", 1000);
-                i.putExtra("outputY", 1000);
-                i.putExtra("noFaceDetection", true);
-                i.putExtra("return-data", true);
-                */
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
                 return true;
             }
@@ -205,7 +203,7 @@ public class Profile extends Fragment {
             Uri selectedImage = data.getData();
 
             try {
-                tempFile = File.createTempFile("crop", "png", Environment.getExternalStorageDirectory());
+                tempFile = File.createTempFile("crop", "png", Environment.getExternalStorageDirectory().getAbsoluteFile());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -299,6 +297,20 @@ public class Profile extends Fragment {
             }
         }
         return info;
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 
 }
