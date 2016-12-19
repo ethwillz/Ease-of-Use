@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class Main extends Fragment{
+public class ProductsHot extends Fragment{
     //Sets up all of the various variables needed throughout the class
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;

@@ -27,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Search extends Fragment {
+public class ProductsMainFeed extends Fragment {
     //Sets up all of the various variables needed throughout the class
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
@@ -69,10 +69,9 @@ public class Search extends Fragment {
         //Sets up some more variables and intializes the views
         super.onActivityCreated(savedInstanceState);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.cardList);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        ((RecyclerView) v.findViewById(R.id.cardList)).setLayoutManager(mLayoutManager);
+        ((RecyclerView) v.findViewById(R.id.cardList)).setHasFixedSize(true);
 
         //Populates the recyclerview with the name, description, and photo for all products in the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -89,6 +88,7 @@ public class Search extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+        System.out.println(following);
 
         mDatabase.child("products").addValueEventListener(new ValueEventListener() {
             @Override
@@ -111,7 +111,7 @@ public class Search extends Fragment {
                     }
                     //Sets adapter to the list of products
                     mAdapter = new ProductAdapter(items);
-                    mRecyclerView.setAdapter(mAdapter);
+                    ((RecyclerView) v.findViewById(R.id.cardList)).setAdapter(mAdapter);
                 }
             }
 

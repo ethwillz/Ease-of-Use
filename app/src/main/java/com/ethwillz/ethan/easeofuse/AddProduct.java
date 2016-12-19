@@ -36,13 +36,14 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class AddProduct extends AppCompatActivity {
 
     //All required variables for classes below
     private int RESULT_LOAD_IMAGE = 652;
-    long numItems;
+    int productID;
     Uri downloadUrl;
     UploadTask uploadTask;
     String picturePath;
@@ -61,36 +62,30 @@ public class AddProduct extends AppCompatActivity {
         setContentView(R.layout.add_product);
 
         final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
-        TextView nameText = (TextView) findViewById(R.id.nameText);
-        TextView linkText = (TextView) findViewById(R.id.linkText);
-        TextView priceText = (TextView) findViewById(R.id.priceText);
-        TextView descriptionText = (TextView) findViewById(R.id.descriptionText);
-        TextView recommendationText = (TextView) findViewById(R.id.recommendationText);
-        EditText nameBox = (EditText) findViewById(R.id.nameBox);
-        EditText linkBox = (EditText) findViewById(R.id.linkBox);
-        EditText descriptionBox = (EditText) findViewById(R.id.priceBox);
-        EditText recommendationBox = (EditText) findViewById(R.id.recommendationBox);
-        Button enter = (Button) findViewById(R.id.enter);
-        Button upload = (Button) findViewById(R.id.upload);
-        nameText.setTypeface(main);
-        linkText.setTypeface(main);
-        priceText.setTypeface(main);
-        descriptionText.setTypeface(main);
-        recommendationText.setTypeface(main);
-        nameBox.setTypeface(main);
-        linkBox.setTypeface(main);
-        descriptionBox.setTypeface(main);
-        recommendationBox.setTypeface(main);
-        enter.setTypeface(main);
-        upload.setTypeface(main);
-        descriptionBox.setTypeface(main);
+        ((TextView) findViewById(R.id.nameText)).setTypeface(main);
+        ((TextView) findViewById(R.id.linkText)).setTypeface(main);
+        ((TextView) findViewById(R.id.priceText)).setTypeface(main);
+        ((TextView) findViewById(R.id.descriptionText)).setTypeface(main);
+        ((TextView) findViewById(R.id.recommendationText)).setTypeface(main);
+        ((EditText) findViewById(R.id.nameBox)).setTypeface(main);
+        ((EditText) findViewById(R.id.linkBox)).setTypeface(main);
+        ((EditText) findViewById(R.id.priceBox)).setTypeface(main);
+        ((EditText) findViewById(R.id.recommendationBox)).setTypeface(main);
+        ((Button) findViewById(R.id.enter)).setTypeface(main);
+        ((Button) findViewById(R.id.upload)).setTypeface(main);
+        ((EditText) findViewById(R.id.descriptionBox)).setTypeface(main);
 
         //Adds listener for the database to get the number of products stored which helps in naming scheme of new product
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabase.child("products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numItems = dataSnapshot.child("products").getChildrenCount();
+                String last = "";
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                while(iterator.hasNext()){
+                    last = iterator.next().getKey();
+                }
+                productID = Integer.parseInt(last) + 1;
             }
 
             @Override
@@ -139,7 +134,7 @@ public class AddProduct extends AppCompatActivity {
         dialog.show();
 
         //child is the name in the storage of the image and storage references are set up
-        String child = numItems + ".jpg";
+        String child = productID + ".jpg";
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://ease-of-use-9fa8a.appspot.com");
         StorageReference productRef = storageRef.child(child);
@@ -176,7 +171,7 @@ public class AddProduct extends AppCompatActivity {
         newProduct.put("price", price.getText().toString());
         newProduct.put("recommendation", recommendation.getText().toString());
         newProduct.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        mDatabase.child("products").child(numItems + "").setValue(newProduct);
+        mDatabase.child("products").child(productID + "").setValue(newProduct);
 
         //Returns to products_hot activity after new product entered into database
         Intent i = new Intent(this, MainView.class);

@@ -52,7 +52,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         @Override
         public void onClick(View view){
             String uid = mUid.getText().toString();
-            Intent i = new Intent(view.getContext(), UserProfile.class);
+            Intent i = new Intent(view.getContext(), UserOtherProfile.class);
             i.putExtra("uid", uid);
             i.putExtra("displayName", mDisplayName.getText().toString());
             i.putExtra("imageUrl", mImageUrl.getText().toString());

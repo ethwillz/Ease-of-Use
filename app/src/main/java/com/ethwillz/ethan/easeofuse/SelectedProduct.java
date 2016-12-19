@@ -26,13 +26,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class SelectedProduct extends AppCompatActivity {
-    String link;
-    Button buy;
-    Button save;
     FirebaseUser user;
-    long numItems;
     String id;
     DatabaseReference mDatabase;
+    String productID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,41 +38,25 @@ public class SelectedProduct extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-
         user = FirebaseAuth.getInstance().getCurrentUser();
-        buy = (Button) findViewById(R.id.buy);
-        save = (Button) findViewById(R.id.save);
 
-        final Typeface button = Typeface.createFromAsset(getAssets(), "fonts/Barrio Santo.ttf");
-        buy.setTypeface(button);
-        save.setTypeface(button);
-
-        Intent i = getIntent();
-        link = i.getExtras().getString("link");
-        String url = i.getExtras().getString("image");
-
-        Picasso.with(this).load(url).into((ImageView) findViewById(R.id.image));
+        Picasso.with(this).load(getIntent().getExtras().getString("image")).into((ImageView) findViewById(R.id.image));
 
         final Typeface main = Typeface.createFromAsset(getAssets(), "fonts/Walkway Bold.ttf");
 
-        TextView title = (TextView) findViewById(R.id.title);
-        TextView description = (TextView) findViewById(R.id.description);
-        TextView price = (TextView) findViewById(R.id.price);
-        TextView recommendation = (TextView) findViewById(R.id.recommendation);
+        ((TextView) findViewById(R.id.title)).setTypeface(main);
+        ((TextView) findViewById(R.id.title)).setText(getIntent().getExtras().getString("title"));
+        ((TextView) findViewById(R.id.description)).setTypeface(main);
+        ((TextView) findViewById(R.id.description)).setText(getIntent().getExtras().getString("description"));
+        ((TextView) findViewById(R.id.price)).setTypeface(main);
+        ((TextView) findViewById(R.id.price)).setText(getIntent().getExtras().getString("price"));
+        ((TextView) findViewById(R.id.recommendation)).setTypeface(main);
+        ((TextView) findViewById(R.id.recommendation)).setText(getIntent().getExtras().getString("recommendation"));
 
-        title.setTypeface(main);
-        description.setTypeface(main);
-        price.setTypeface(main);
-        recommendation.setTypeface(main);
-        title.setText(i.getExtras().getString("title"));
-        description.setText(i.getExtras().getString("description"));
-        price.setText(i.getExtras().getString("price"));
-        recommendation.setText(i.getExtras().getString("recommendation"));
+        ((Button) findViewById(R.id.buy)).setTypeface(main);
+        ((Button) findViewById(R.id.save)).setTypeface(main);
 
-        buy.setTypeface(main);
-        save.setTypeface(main);
-
-        id = i.getExtras().getString("id");
+        id = getIntent().getExtras().getString("id");
 
         mDatabase.child("saved").child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -84,7 +65,7 @@ public class SelectedProduct extends AppCompatActivity {
 
                 for(int i = 0; i < dataSnapshot.getChildrenCount(); i++){
                     if(savedIDs.next().getKey().equals(id)){
-                        save.setText("Saved");
+                        ((Button) findViewById(R.id.save)).setText("Saved");
                     }
                 }
             }
@@ -93,27 +74,48 @@ public class SelectedProduct extends AppCompatActivity {
             }
         });
 
-        buy.setOnClickListener(new View.OnClickListener() {
+        mDatabase.child("products").child(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child("uid").getValue().toString().equals(user.getUid())){
+                        ((Button) findViewById(R.id.save)).setText("Edit");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        (findViewById(R.id.buy)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getIntent().getExtras().getString("link")));
                 startActivity(i);
             }
         });
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        save.setOnClickListener(new View.OnClickListener(){
+        ((Button) findViewById(R.id.save)).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 //Adds listener for the database to get the number of products stored which helps in naming scheme of new product
-                if(save.getText().toString().equals("Save")){
-                    save.setText("Saved");
+                if(((Button) findViewById(R.id.save)).getText().toString().equals("Save")){
+                    ((Button) findViewById(R.id.save)).setText("Saved");
                     mDatabase.child("saved").child(user.getUid()).child(getIntent().getStringExtra("id")).setValue(getIntent().getStringExtra("uid"));
                 }
-                else{
-                    save.setText("Save");
+                else if(((Button) findViewById(R.id.save)).getText().toString().equals("Saved")){
+                    ((Button) findViewById(R.id.save)).setText("Save");
                     mDatabase.child("saved").child(user.getUid()).child(getIntent().getStringExtra("id")).removeValue();
+                }
+                else{
+                    Intent i = new Intent(getApplicationContext(), EditProduct.class);
+                    i.putExtra("productID", id);
+                    i.putExtra("name", ((TextView) findViewById(R.id.title)).getText().toString());
+                    i.putExtra("price", ((TextView) findViewById(R.id.price)).getText().toString());
+                    i.putExtra("description", ((TextView) findViewById(R.id.description)).getText().toString());
+                    i.putExtra("recommendation", ((TextView) findViewById(R.id.recommendation)).getText().toString());
+                    startActivity(i);
                 }
             }
         });

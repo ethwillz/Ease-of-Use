@@ -8,7 +8,7 @@
     android:paddingRight="6dp"
     android:paddingTop="6dp"
     android:paddingBottom="6dp"
-    tools:context=".Main"
+    tools:context=".ProductsHot"
     android:background="#000000">
 
     <!--Recyclerview which displays the products which are in card views-->
