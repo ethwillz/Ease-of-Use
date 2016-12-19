@@ -42,7 +42,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
-
+z
     <!--Add product button which is only visible to authorized users-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_button"

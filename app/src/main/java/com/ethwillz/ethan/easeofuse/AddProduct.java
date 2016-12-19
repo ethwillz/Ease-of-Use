@@ -13,7 +13,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -129,8 +132,16 @@ public class AddProduct extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         //Progress spinner to let add_user know application is working
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Saving Product");
+        CustomLoadingDialog dialog = new CustomLoadingDialog(this);;
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.CENTER;
+
+        window.setAttributes(wlp);
         dialog.show();
 
         //child is the name in the storage of the image and storage references are set up
