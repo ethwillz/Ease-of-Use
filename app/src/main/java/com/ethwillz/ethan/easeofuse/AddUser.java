@@ -141,6 +141,7 @@ public class AddUser extends Fragment {
                     for(int i = 0; i < d.getChildrenCount(); i++){
                         String userID = userIDs.next().getValue().toString();
                         top.put(userID, 1 + (top.containsKey(userID) ? top.get(userID) : 0));
+                        System.out.println(top);
                     }
                 }
 

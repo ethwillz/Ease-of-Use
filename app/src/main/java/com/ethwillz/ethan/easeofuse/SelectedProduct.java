@@ -115,6 +115,7 @@ public class SelectedProduct extends AppCompatActivity {
                     i.putExtra("price", ((TextView) findViewById(R.id.price)).getText().toString());
                     i.putExtra("description", ((TextView) findViewById(R.id.description)).getText().toString());
                     i.putExtra("recommendation", ((TextView) findViewById(R.id.recommendation)).getText().toString());
+                    finish();
                     startActivity(i);
                 }
             }

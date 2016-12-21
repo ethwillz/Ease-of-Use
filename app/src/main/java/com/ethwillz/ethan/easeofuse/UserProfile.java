@@ -194,8 +194,8 @@ public class UserProfile extends Fragment {
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Intent intent = new Intent("com.android.camera.action.CROP");
             intent.setData(selectedImage);
-            intent.putExtra("outputX", 1000);
-            intent.putExtra("outputY", 1000);
+            intent.putExtra("outputX", 500);
+            intent.putExtra("outputY", 500);
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);
             intent.putExtra("scale", true);
@@ -208,19 +208,6 @@ public class UserProfile extends Fragment {
             startActivityForResult(intent, RESULT_CROP_IMAGE);
         }
         if(requestCode == RESULT_CROP_IMAGE && resultCode == RESULT_OK && null != data){
-            /*
-            Uri selected = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-            //Sets up a cursor which queries for the filepath of the image
-            Cursor cursor = getContext().getContentResolver().query(selected, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            //File path is determined from cursor
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String path = cursor.getString(columnIndex);
-            cursor.close();
-            */
 
             //child is the name in the storage of the image and storage references are set up
             String child = user.getUid() + ".png";
@@ -243,9 +230,7 @@ public class UserProfile extends Fragment {
     }
 
     public void pictureSuccess(Uri downloadUrl){
-        System.out.println("---------------------------");
         mDatabase.child("users").child(user.getUid()).child("imageUrl").setValue(downloadUrl.toString());
-        System.out.println("In database");
         tempFile.delete();
     }
 

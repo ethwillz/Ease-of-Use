@@ -22,10 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InitialScreen"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" />
-        <activity
             android:name=".SignIn"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />

@@ -186,6 +186,7 @@ public class AddProduct extends AppCompatActivity {
 
         //Returns to products_hot activity after new product entered into database
         Intent i = new Intent(this, MainView.class);
+        finish();
         startActivity(i);
     }
 

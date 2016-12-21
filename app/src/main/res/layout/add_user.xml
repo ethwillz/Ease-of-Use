@@ -35,7 +35,9 @@
                 android:textColorHint="#B2B6B8"
                 android:textColor="#ffffff"
                 android:layout_marginTop="25dp"
-                android:theme="@style/EditTextTheme"/>
+                android:theme="@style/EditTextTheme"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

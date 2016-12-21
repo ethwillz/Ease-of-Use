@@ -1,5 +1,6 @@
 package com.ethwillz.ethan.easeofuse;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,13 +35,29 @@ public class EditProduct extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("products").child(getIntent().getExtras().getString("productID")).child("name").setValue(((EditText) findViewById(R.id.nameBox)).getText().toString());
-                mDatabase.child("products").child(getIntent().getExtras().getString("productID")).child("price").setValue(((EditText) findViewById(R.id.priceBox)).getText().toString());
-                mDatabase.child("products").child(getIntent().getExtras().getString("productID")).child("description").setValue(((EditText) findViewById(R.id.descriptionBox)).getText().toString());
-                mDatabase.child("products").child(getIntent().getExtras().getString("productID")).child("recommendation").setValue(((EditText) findViewById(R.id.recommendationBox)).getText().toString());
+                mDatabase.child("products").child(getIntent().getStringExtra("productID")).child("name").setValue(((EditText) findViewById(R.id.nameBox)).getText().toString());
+                mDatabase.child("products").child(getIntent().getStringExtra("productID")).child("price").setValue(((EditText) findViewById(R.id.priceBox)).getText().toString());
+                mDatabase.child("products").child(getIntent().getStringExtra("productID")).child("description").setValue(((EditText) findViewById(R.id.descriptionBox)).getText().toString());
+                mDatabase.child("products").child(getIntent().getStringExtra("productID")).child("recommendation").setValue(((EditText) findViewById(R.id.recommendationBox)).getText().toString());
 
                 finish();
             }
         });
+
+        /*
+        ((Button) findViewById(R.id.delete)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase.child("products").child(getIntent().getStringExtra("productID")).removeValue(new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        finish();
+                        startActivity(new Intent(getApplication(), MainView.class));
+                    }
+                });
+            }
+        });
+        */
     }
 }

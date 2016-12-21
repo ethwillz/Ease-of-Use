@@ -66,6 +66,10 @@ public class SignIn extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
 
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            startActivity(new Intent(this, MainView.class));
+        }
+
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
